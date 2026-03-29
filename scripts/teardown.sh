@@ -46,10 +46,12 @@ fi
 echo ""
 echo "==> Removing Lambda invoke permission..."
 
-if aws lambda get-policy \
+POLICY_OUTPUT=$(aws lambda get-policy \
   --function-name "$FUNCTION_NAME" \
   --region "$REGION" \
-  --query "Policy" --output text 2>/dev/null | grep -q "apigateway-invoke"; then
+  --query "Policy" --output text 2>/dev/null || echo "")
+
+if echo "$POLICY_OUTPUT" | grep -q "apigateway-invoke"; then
   aws lambda remove-permission \
     --function-name "$FUNCTION_NAME" \
     --statement-id apigateway-invoke \
