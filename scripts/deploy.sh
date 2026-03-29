@@ -167,10 +167,12 @@ fi
 echo ""
 echo "==> Lambda invoke permission..."
 
-if ! aws lambda get-policy \
+POLICY_OUTPUT=$(aws lambda get-policy \
   --function-name "$FUNCTION_NAME" \
   --region "$REGION" \
-  --query "Policy" --output text 2>/dev/null | grep -q "apigateway-invoke"; then
+  --query "Policy" --output text 2>/dev/null || echo "")
+
+if ! echo "$POLICY_OUTPUT" | grep -q "apigateway-invoke"; then
   echo "    Adding invoke permission..."
   aws lambda add-permission \
     --function-name "$FUNCTION_NAME" \
