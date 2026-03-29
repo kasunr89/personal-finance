@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "npx tsx watch src/server.ts",
-    "deploy": "serverless deploy"
+    "build": "./scripts/build.sh",
+    "deploy": "./scripts/deploy.sh",
+    "teardown": "./scripts/teardown.sh",
+    "dev": "npx tsx watch src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,8 +20,6 @@
     "@types/aws-lambda": "^8.10.161",
     "@types/node": "^25.5.0",
     "esbuild": "^0.27.4",
-    "serverless": "^4.33.0",
-    "serverless-esbuild": "^1.57.0",
     "typescript": "^6.0.2"
   }
 }
