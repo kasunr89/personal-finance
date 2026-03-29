@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 REGION="eu-north-1"
 ROLE_NAME="personal-finance-lambda-role"
@@ -15,7 +15,7 @@ echo "    Account: $ACCOUNT_ID"
 # ── Step 1: Build ────────────────────────────────────────────────────────────
 echo ""
 echo "==> Building..."
-./scripts/build.sh
+"$(dirname "$0")/build.sh"
 
 # ── Step 2: IAM Role ─────────────────────────────────────────────────────────
 echo ""
@@ -167,12 +167,10 @@ fi
 echo ""
 echo "==> Lambda invoke permission..."
 
-PERMISSION_EXISTS=$(aws lambda get-policy \
+if ! aws lambda get-policy \
   --function-name "$FUNCTION_NAME" \
   --region "$REGION" \
-  --query "Policy" --output text 2>/dev/null | grep -c "apigateway-invoke" || true)
-
-if [ "$PERMISSION_EXISTS" -eq 0 ]; then
+  --query "Policy" --output text 2>/dev/null | grep -q "apigateway-invoke"; then
   echo "    Adding invoke permission..."
   aws lambda add-permission \
     --function-name "$FUNCTION_NAME" \
