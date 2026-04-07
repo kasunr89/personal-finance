@@ -3,3 +3,4 @@ dist
 .esbuild
 .serverless
 *.js.map
+.env
