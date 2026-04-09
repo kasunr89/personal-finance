@@ -6,7 +6,8 @@
     "build": "./scripts/build.sh",
     "deploy": "./scripts/deploy.sh",
     "teardown": "./scripts/teardown.sh",
-    "dev": "npx tsx watch src/server.ts"
+    "dev": "npx tsx watch src/server.ts",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [],
   "author": "",

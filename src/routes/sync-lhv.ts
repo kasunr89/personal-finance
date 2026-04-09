@@ -1,6 +1,6 @@
-import type { FastifyInstance } from "fastify";
-import type { fetchLhvTransactions as FetchLhvTransactions } from "../lhv-client.js";
-import type { sql as SqlType } from "../db.js";
+import type { FastifyInstance } from 'fastify';
+import type { fetchLhvTransactions as FetchLhvTransactions } from '../lhv-client.js';
+import type { sql as SqlType } from '../db.js';
 
 // Dependencies injected via opts for testability (Node v20 does not support mock.module with tsx/ESM).
 // In test environments where DATABASE_URL is absent, opts.sql MUST be provided or the dynamic import
@@ -16,15 +16,15 @@ export async function syncLhvRoute(
 ) {
 	const fetch =
 		opts.fetchTransactions ??
-		(await import("../lhv-client.js")).fetchLhvTransactions;
-	const sql = opts.sql ?? (await import("../db.js")).sql;
+		(await import('../lhv-client.js')).fetchLhvTransactions;
+	const sql = opts.sql ?? (await import('../db.js')).sql;
 
-	app.get("/sync-lhv", async (_request, reply) => {
+	app.get('/sync-lhv', async (_request, reply) => {
 		let transactions;
 		try {
 			transactions = await fetch();
 		} catch {
-			return reply.status(503).send({ error: "LHV API unavailable" });
+			return reply.status(503).send({ error: 'LHV API unavailable' });
 		}
 
 		let synced = 0;
@@ -39,7 +39,7 @@ export async function syncLhvRoute(
 				synced += rows.length;
 			}
 		} catch {
-			return reply.status(500).send({ error: "Database error" });
+			return reply.status(500).send({ error: 'Database error' });
 		}
 
 		return reply.send({ synced });
