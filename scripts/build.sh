@@ -3,7 +3,7 @@ set -e
 
 echo "==> Building Lambda bundle..."
 
-npx esbuild src/lambda.ts \
+npx esbuild src/infrastructure/lambda.ts \
   --bundle \
   --platform=node \
   --target=node20 \

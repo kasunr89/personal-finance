@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import { syncLhvRoute } from './routes/sync-lhv.js';
+import { syncEnableBankingRoute } from './routes/sync-enablebanking.js';
 
 export function buildApp() {
 	const app = Fastify({ logger: true });
@@ -9,6 +10,7 @@ export function buildApp() {
 	});
 
 	app.register(syncLhvRoute);
+	app.register(syncEnableBankingRoute);
 
 	return app;
 }

@@ -1,0 +1,10 @@
+import type { Transaction } from '../domain/types.js';
+
+export interface TransactionRepo {
+	/**
+	 * Upsert transactions into the store.
+	 * Returns the count of newly inserted rows (0 for duplicates).
+	 * An empty array is a valid input and must return 0 without error.
+	 */
+	upsert(transactions: Transaction[]): Promise<number>;
+}
