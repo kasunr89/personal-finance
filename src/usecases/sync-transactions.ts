@@ -9,3 +9,9 @@ export async function syncTransactions(
 	const synced = await repo.upsert(transactions);
 	return { synced };
 }
+
+export async function getTransactions(
+	repo: TransactionRepo,
+): Promise<void> {
+	await repo.getTransactions();
+}

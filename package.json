@@ -6,7 +6,7 @@
     "build": "./scripts/build.sh",
     "deploy": "./scripts/deploy.sh",
     "teardown": "./scripts/teardown.sh",
-    "dev": "npx tsx watch src/infrastructure/server.ts",
+    "dev": "npx tsx watch --env-file=.env src/infrastructure/server.ts",
     "test": "npx tsx --test __tests__/usecases/sync-transactions.test.ts __tests__/adapters/banks/lhv-provider.test.ts __tests__/adapters/db/neon-transaction-repo.test.ts __tests__/routes/sync-lhv.test.ts",
     "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },

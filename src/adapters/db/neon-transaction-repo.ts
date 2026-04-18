@@ -1,4 +1,4 @@
-import type { Transaction } from '../../domain/types.js';
+import type { StoredTransaction, Transaction } from '../../domain/types.js';
 import type { TransactionRepo } from '../../ports/transaction-repo.js';
 
 type SqlTaggedTemplate = (
@@ -21,5 +21,10 @@ export class NeonTransactionRepo implements TransactionRepo {
 			count += rows.length;
 		}
 		return count;
+	}
+
+	async getTransactions(): Promise<StoredTransaction[]> {
+		const rows = await this.sql`SELECT * FROM transactions LIMIT 10`;
+		return rows as unknown as StoredTransaction[];
 	}
 }

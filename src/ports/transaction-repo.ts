@@ -1,4 +1,4 @@
-import type { Transaction } from '../domain/types.js';
+import type { StoredTransaction, Transaction } from '../domain/types.js';
 
 export interface TransactionRepo {
 	/**
@@ -7,4 +7,10 @@ export interface TransactionRepo {
 	 * An empty array is a valid input and must return 0 without error.
 	 */
 	upsert(transactions: Transaction[]): Promise<number>;
+
+	/**
+	 * Fetch the most recent transactions from the store.
+	 * Returns rows in their raw database shape (snake_case, DB-native types).
+	 */
+	getTransactions(): Promise<StoredTransaction[]>;
 }

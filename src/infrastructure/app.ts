@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import { syncLhvRoute } from './routes/sync-lhv.js';
 import { syncEnableBankingRoute } from './routes/sync-enablebanking.js';
+import { enableBankingCallbackRoute } from './routes/enablebanking-callback.js';
 
 export function buildApp() {
 	const app = Fastify({ logger: true });
@@ -11,6 +12,7 @@ export function buildApp() {
 
 	app.register(syncLhvRoute);
 	app.register(syncEnableBankingRoute);
+	app.register(enableBankingCallbackRoute);
 
 	return app;
 }
