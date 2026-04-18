@@ -18,6 +18,7 @@
     "@fastify/aws-lambda": "^6.4.0",
     "@neondatabase/serverless": "^1.0.2",
     "fastify": "^5.8.4",
+    "fastify-plugin": "^5.1.0",
     "jsonwebtoken": "^9.0.3",
     "kysely": "^0.28.16",
     "kysely-neon": "^2.0.2"

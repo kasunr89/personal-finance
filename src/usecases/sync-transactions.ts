@@ -1,5 +1,6 @@
 import type { BankProvider } from '../ports/bank-provider.js';
 import type { TransactionRepo } from '../ports/transaction-repo.js';
+import type { StoredTransaction } from '../domain/types.js';
 
 export async function syncTransactions(
 	provider: BankProvider,
@@ -12,6 +13,6 @@ export async function syncTransactions(
 
 export async function getTransactions(
 	repo: TransactionRepo,
-): Promise<void> {
-	await repo.getTransactions();
+): Promise<StoredTransaction[]> {
+	return repo.getTransactions();
 }

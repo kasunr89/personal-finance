@@ -4,7 +4,6 @@ import type { TransactionRepo } from '../../ports/transaction-repo.js';
 import { EnableBankingProvider } from '../../adapters/banks/enablebanking/enablebanking-provider.js';
 import { NeonTransactionRepo } from '../../adapters/db/neon-transaction-repo.js';
 import { syncTransactions } from '../../usecases/sync-transactions.js';
-import { createDb } from '../../adapters/db/kysely.js';
 
 interface SyncEnableBankingOptions {
 	provider?: BankProvider;
@@ -15,6 +14,8 @@ export async function syncEnableBankingRoute(
 	app: FastifyInstance,
 	opts: SyncEnableBankingOptions = {},
 ) {
+	const repo = opts.repo ?? new NeonTransactionRepo(app.db);
+
 	app.get('/sync-enablebanking', async (request, reply) => {
 		const query = request.query as {
 			accountUid?: string;
@@ -27,9 +28,6 @@ export async function syncEnableBankingRoute(
 			});
 		}
 
-		const repo =
-			opts.repo ??
-			new NeonTransactionRepo(createDb(process.env.DATABASE_URL!));
 		const provider =
 			opts.provider ??
 			new EnableBankingProvider(query.accountUid!, query.dateFrom!);
