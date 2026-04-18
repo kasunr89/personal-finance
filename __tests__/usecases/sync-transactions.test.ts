@@ -23,6 +23,7 @@ describe('syncTransactions', () => {
 		};
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => 1),
+			getTransactions: mock.fn(async () => []),
 		};
 
 		const result = await syncTransactions(provider, repo);
@@ -38,6 +39,7 @@ describe('syncTransactions', () => {
 		};
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => 0),
+			getTransactions: mock.fn(async () => []),
 		};
 
 		const result = await syncTransactions(provider, repo);
@@ -55,6 +57,7 @@ describe('syncTransactions', () => {
 		};
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => 0),
+			getTransactions: mock.fn(async () => []),
 		};
 
 		await assert.rejects(() => syncTransactions(provider, repo), {
@@ -70,6 +73,7 @@ describe('syncTransactions', () => {
 			upsert: mock.fn(async () => {
 				throw new Error('DB down');
 			}),
+			getTransactions: mock.fn(async () => []),
 		};
 
 		await assert.rejects(() => syncTransactions(provider, repo), {

@@ -7,7 +7,7 @@
     "deploy": "./scripts/deploy.sh",
     "teardown": "./scripts/teardown.sh",
     "dev": "npx tsx watch --env-file=.env src/infrastructure/server.ts",
-    "test": "npx tsx --test __tests__/usecases/sync-transactions.test.ts __tests__/adapters/banks/lhv-provider.test.ts __tests__/adapters/db/neon-transaction-repo.test.ts __tests__/routes/sync-lhv.test.ts",
+    "test": "npx tsx --test __tests__/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },
   "keywords": [],
@@ -18,7 +18,9 @@
     "@fastify/aws-lambda": "^6.4.0",
     "@neondatabase/serverless": "^1.0.2",
     "fastify": "^5.8.4",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "kysely": "^0.28.16",
+    "kysely-neon": "^2.0.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.161",

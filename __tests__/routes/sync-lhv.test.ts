@@ -34,6 +34,7 @@ describe('GET /sync-lhv', () => {
 		};
 		const mockRepo: TransactionRepo = {
 			upsert: mock.fn(async () => 2),
+			getTransactions: mock.fn(async () => []),
 		};
 
 		const app = Fastify();
@@ -57,6 +58,7 @@ describe('GET /sync-lhv', () => {
 		};
 		const mockRepo: TransactionRepo = {
 			upsert: mock.fn(async () => 0),
+			getTransactions: mock.fn(async () => []),
 		};
 
 		const app = Fastify();
@@ -82,6 +84,7 @@ describe('GET /sync-lhv', () => {
 			upsert: mock.fn(async () => {
 				throw new Error('connection refused');
 			}),
+			getTransactions: mock.fn(async () => []),
 		};
 
 		const app = Fastify();

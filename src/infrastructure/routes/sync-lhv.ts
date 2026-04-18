@@ -4,7 +4,7 @@ import type { TransactionRepo } from '../../ports/transaction-repo.js';
 import { LhvProvider } from '../../adapters/banks/lhv/lhv-provider.js';
 import { NeonTransactionRepo } from '../../adapters/db/neon-transaction-repo.js';
 import { syncTransactions } from '../../usecases/sync-transactions.js';
-import { neon } from '@neondatabase/serverless';
+import { createDb } from '../../adapters/db/kysely.js';
 
 interface SyncLhvOptions {
 	provider?: BankProvider;
@@ -15,10 +15,9 @@ export async function syncLhvRoute(
 	app: FastifyInstance,
 	opts: SyncLhvOptions = {},
 ) {
-	const repo =
-		opts.repo ?? new NeonTransactionRepo(neon(process.env.DATABASE_URL!));
-
 	app.get('/sync-lhv', async (_request, reply) => {
+		const repo =
+			opts.repo ?? new NeonTransactionRepo(createDb(process.env.DATABASE_URL!));
 		const provider = opts.provider ?? new LhvProvider();
 
 		try {

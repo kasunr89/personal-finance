@@ -1,30 +1,36 @@
+import type { Kysely } from 'kysely';
 import type { StoredTransaction, Transaction } from '../../domain/types.js';
 import type { TransactionRepo } from '../../ports/transaction-repo.js';
-
-type SqlTaggedTemplate = (
-	strings: TemplateStringsArray,
-	...values: unknown[]
-) => Promise<Record<string, unknown>[]>;
+import type { Database } from './schema.js';
 
 export class NeonTransactionRepo implements TransactionRepo {
-	constructor(private sql: SqlTaggedTemplate) {}
+	constructor(private db: Kysely<Database>) {}
 
 	async upsert(transactions: Transaction[]): Promise<number> {
 		let count = 0;
 		for (const t of transactions) {
-			const rows = await this.sql`
-        INSERT INTO transactions (account_id, amount, currency, description, source, source_id, created_at)
-        VALUES (${t.accountId}, ${t.amount}, ${t.currency}, ${t.description}, ${t.source}, ${t.sourceId}, ${t.bookingDate})
-        ON CONFLICT (account_id, source, source_id) DO NOTHING
-        RETURNING id
-      `;
-			count += rows.length;
+			const result = await this.db
+				.insertInto('transactions')
+				.values({
+					account_id: t.accountId,
+					amount: t.amount as unknown as string,
+					currency: t.currency,
+					description: t.description,
+					source: t.source,
+					source_id: t.sourceId,
+					created_at: t.bookingDate as unknown as Date,
+				})
+				.onConflict((oc) =>
+					oc.columns(['account_id', 'source', 'source_id']).doNothing(),
+				)
+				.returning('id')
+				.executeTakeFirst();
+			if (result) count++;
 		}
 		return count;
 	}
 
 	async getTransactions(): Promise<StoredTransaction[]> {
-		const rows = await this.sql`SELECT * FROM transactions LIMIT 10`;
-		return rows as unknown as StoredTransaction[];
+		return this.db.selectFrom('transactions').selectAll().execute();
 	}
 }
