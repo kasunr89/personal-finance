@@ -2,6 +2,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import type { Transaction } from '../../../domain/types.js';
 import type { BankProvider } from '../../../ports/bank-provider.js';
+import type { EnableBankingAuthProvider, EnableBankingSession } from '../../../ports/enablebanking-auth-provider.js';
 
 const API_BASE = 'https://api.enablebanking.com';
 
@@ -107,10 +108,16 @@ export async function deleteSession(sessionId: string): Promise<void> {
 }
 
 interface EnableBankingTransaction {
-	transaction_id: string;
+	entry_reference: string;
+	transaction_id: string | null;
 	booking_date: string;
 	transaction_amount: { amount: string; currency: string };
 	remittance_information_unstructured: string;
+	remittance_information: string[];
+	credit_debit_indicator: string;
+	creditor: { name: string | null } | null;
+	debtor: { name: string | null } | null;
+	[key: string]: unknown;
 }
 
 interface TransactionsResponse {
@@ -118,7 +125,7 @@ interface TransactionsResponse {
 	continuation_key?: string;
 }
 
-async function fetchAllTransactions(
+export async function fetchAllTransactions(
 	accountUid: string,
 	dateFrom: string,
 ): Promise<EnableBankingTransaction[]> {
@@ -159,8 +166,29 @@ export class EnableBankingProvider implements BankProvider {
 				description: t.remittance_information_unstructured,
 				bookingDate: t.booking_date,
 				source: 'enablebanking',
-				sourceId: t.transaction_id,
+				sourceId: t.transaction_id ?? t.entry_reference,
 			}),
 		);
 	}
+}
+
+export class EnableBankingAuthAdapter implements EnableBankingAuthProvider {
+	private readonly aspsp = { name: 'LHV Pank', country: 'EE' };
+
+	async startAuth(redirectUrl: string, validUntil: string): Promise<{ url: string }> {
+		return startAuth(this.aspsp, redirectUrl, validUntil);
+	}
+
+	async createSession(code: string): Promise<EnableBankingSession> {
+		return createSession(code);
+	}
+
+	async getSession(sessionId: string): Promise<EnableBankingSession> {
+		return getSession(sessionId);
+	}
+
+	async deleteSession(sessionId: string): Promise<void> {
+		return deleteSession(sessionId);
+	}
+
 }

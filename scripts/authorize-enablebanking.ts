@@ -8,10 +8,7 @@ const REDIRECT_URL = `http://localhost:${REDIRECT_PORT}/callback`;
 const ACCESS_DAYS = 90;
 
 async function main() {
-  const useMock = process.argv.includes('--mock');
-  const aspsp = useMock
-    ? { name: 'Mock ASPSP', country: 'EE' }
-    : { name: 'LHV Pank', country: 'EE' };
+  const aspsp = { name: 'LHV Pank', country: 'EE' };
 
   const validUntil = new Date(
     Date.now() + ACCESS_DAYS * 24 * 60 * 60 * 1000,
