@@ -1,15 +1,9 @@
 import fs from 'fs';
 import type { FastifyInstance } from 'fastify';
-import type { EnableBankingAuthProvider } from '../../ports/enablebanking-auth-provider.js';
-import { EnableBankingAuthAdapter, EnableBankingProvider } from '../../adapters/banks/enablebanking/enablebanking-provider.js';
-import {
-	startEnableBankingAuth,
-	deleteEnableBankingSession,
-} from '../../usecases/enablebanking-auth.js';
+import { EnableBankingProvider } from '../../adapters/banks/enablebanking/enablebanking-provider.js';
 import type { BankProvider } from '../../ports/bank-provider.js';
 
 interface EnableBankingAuthOptions {
-	provider?: EnableBankingAuthProvider;
 	bankProvider?: BankProvider;
 }
 
@@ -17,20 +11,6 @@ export async function enableBankingAuthRoute(
 	app: FastifyInstance,
 	opts: EnableBankingAuthOptions = {},
 ) {
-	const provider = opts.provider ?? new EnableBankingAuthAdapter();
-
-	app.get('/auth/enablebanking/start', async (_request, reply) => {
-		const redirectUrl = `${process.env.REDIRECT_HOST}/callback`;
-		const result = await startEnableBankingAuth(provider, redirectUrl);
-		return reply.send(result);
-	});
-
-	app.delete('/auth/enablebanking/session/:sessionId', async (request, reply) => {
-		const { sessionId } = request.params as { sessionId: string };
-		await deleteEnableBankingSession(provider, sessionId);
-		return reply.status(204).send();
-	});
-
 	app.get('/auth/enablebanking/accounts/:accountId/transactions', async (request, reply) => {
 		if (process.env.SANDBOX === 'true') {
 			const data = JSON.parse(fs.readFileSync('data/transations.json', 'utf-8'));
