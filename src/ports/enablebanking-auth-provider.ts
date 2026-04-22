@@ -1,6 +1,23 @@
 export interface EnableBankingSession {
-	session_id: string;
-	accounts: Array<{ uid: string; iban?: string }>;
+	status: string;
+	accounts: string[];
+	accounts_data: Array<{
+		uid: string;
+		identification_hash: string;
+		identification_hashes: string[];
+	}>;
+	aspsp: { name: string; country: string };
+	psu_type: string;
+	psu_id_hash: string;
+	access: {
+		accounts: string[] | null;
+		balances: boolean;
+		transactions: boolean;
+		valid_until: string;
+	};
+	created: string;
+	authorized: string | null;
+	closed: string | null;
 }
 
 export interface EnableBankingAuthProvider {

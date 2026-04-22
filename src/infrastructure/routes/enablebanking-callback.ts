@@ -12,8 +12,8 @@ export async function enableBankingCallbackRoute(app: FastifyInstance) {
 		const session = await createSession(code);
 
 		return reply.send({
-			session_id: session.session_id,
 			accounts: session.accounts,
+			accounts_data: session.accounts_data,
 		});
 	});
 }

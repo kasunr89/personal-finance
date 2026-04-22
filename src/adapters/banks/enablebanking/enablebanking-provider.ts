@@ -88,8 +88,25 @@ export async function startAuth(
 }
 
 export interface SessionResponse {
-	session_id: string;
-	accounts: Array<{ uid: string; iban?: string }>;
+	status: string;
+	accounts: string[];
+	accounts_data: Array<{
+		uid: string;
+		identification_hash: string;
+		identification_hashes: string[];
+	}>;
+	aspsp: { name: string; country: string };
+	psu_type: string;
+	psu_id_hash: string;
+	access: {
+		accounts: string[] | null;
+		balances: boolean;
+		transactions: boolean;
+		valid_until: string;
+	};
+	created: string;
+	authorized: string | null;
+	closed: string | null;
 }
 
 export async function createSession(code: string): Promise<SessionResponse> {
@@ -163,7 +180,7 @@ export class EnableBankingProvider implements BankProvider {
 				accountId: this.accountUid,
 				amount: parseFloat(t.transaction_amount.amount),
 				currency: t.transaction_amount.currency,
-				description: t.remittance_information_unstructured,
+				description: t.remittance_information[0] ?? null,
 				bookingDate: t.booking_date,
 				source: 'enablebanking',
 				sourceId: t.transaction_id ?? t.entry_reference,
