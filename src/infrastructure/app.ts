@@ -1,6 +1,5 @@
 import Fastify from 'fastify';
 import { dbPlugin } from './plugins/db.js';
-import { syncLhvRoute } from './routes/sync-lhv.js';
 import { syncEnableBankingRoute } from './routes/sync-enablebanking.js';
 import { enableBankingCallbackRoute } from './routes/enablebanking-callback.js';
 import { enableBankingAuthRoute } from './routes/enablebanking-auth.js';
@@ -14,7 +13,6 @@ export function buildApp() {
 		return { status: 'ok' };
 	})
 	.register(dbPlugin)
-	.register(syncLhvRoute)
 	.register(syncEnableBankingRoute)
 	.register(enableBankingCallbackRoute)
 	.register(enableBankingAuthRoute)
