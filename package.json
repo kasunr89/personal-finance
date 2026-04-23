@@ -7,7 +7,7 @@
     "deploy": "./scripts/deploy.sh",
     "teardown": "./scripts/teardown.sh",
     "dev": "npx tsx watch --env-file=.env src/infrastructure/server.ts",
-    "test": "npx tsx --test __tests__/**/*.ts",
+    "test": "find __tests__ -name '*.ts' | sort | xargs npx tsx --test",
     "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
   },
   "keywords": [],

@@ -1,7 +1,14 @@
 import type { FastifyInstance } from 'fastify';
-import { createSession } from '../../../adapters/banks/enablebanking/enablebanking-provider.js';
+import { EnableBankingAuthAdapter } from '../../../adapters/banks/enablebanking/enablebanking-provider.js';
+import type { EnableBankingAuthProvider } from '../../../ports/enablebanking-auth-provider.js';
 
-export async function enableBankingCallbackRoute(fastify: FastifyInstance) {
+interface Options {
+    provider?: EnableBankingAuthProvider;
+}
+
+export async function enableBankingCallbackRoute(fastify: FastifyInstance, opts: Options = {}) {
+    const provider = opts.provider ?? new EnableBankingAuthAdapter();
+
     fastify.get('/callback', async (request, reply) => {
         const { code } = request.query as { code?: string };
 
@@ -9,7 +16,7 @@ export async function enableBankingCallbackRoute(fastify: FastifyInstance) {
             return reply.status(400).send({ error: 'Missing code parameter' });
         }
 
-        const session = await createSession(code);
+        const session = await provider.createSession(code);
 
         return reply.send({
             accounts: session.accounts,

@@ -1,8 +1,8 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import Fastify from 'fastify';
-import type { TransactionRepo } from '../../src/ports/transaction-repo.js';
-import type { StoredTransaction } from '../../src/domain/types.js';
+import type { TransactionRepo } from '../../../src/ports/transaction-repo.js';
+import type { StoredTransaction } from '../../../src/domain/types.js';
 
 const storedTx: StoredTransaction = {
 	id: 1,
@@ -10,8 +10,8 @@ const storedTx: StoredTransaction = {
 	amount: '12.39',
 	currency: 'EUR',
 	description: 'Bolt',
-	source: 'LHV',
-	source_id: '12',
+	source: 'enablebanking',
+	source_id: 'src-1',
 	created_at: new Date('2026-04-17T21:00:00.000Z'),
 };
 
@@ -23,9 +23,9 @@ describe('GET /transactions', () => {
 		};
 
 		const app = Fastify();
-		const { transactionsRoute } =
-			await import('../../src/infrastructure/routes/transactions.js');
-		app.register(transactionsRoute, { repo: mockRepo });
+		const { getTransactionsRoute } =
+			await import('../../../src/infrastructure/routes/internal/get-transactions.js');
+		app.register(getTransactionsRoute, { repo: mockRepo });
 
 		const response = await app.inject({ method: 'GET', url: '/transactions' });
 		assert.equal(response.statusCode, 200);
@@ -33,7 +33,7 @@ describe('GET /transactions', () => {
 		assert.equal(body.length, 1);
 		assert.equal(body[0].id, 1);
 		assert.equal(body[0].amount, '12.39');
-		assert.equal(body[0].source, 'LHV');
+		assert.equal(body[0].source, 'enablebanking');
 	});
 
 	it('returns empty array when no transactions', async () => {
@@ -43,9 +43,9 @@ describe('GET /transactions', () => {
 		};
 
 		const app = Fastify();
-		const { transactionsRoute } =
-			await import('../../src/infrastructure/routes/transactions.js');
-		app.register(transactionsRoute, { repo: mockRepo });
+		const { getTransactionsRoute } =
+			await import('../../../src/infrastructure/routes/internal/get-transactions.js');
+		app.register(getTransactionsRoute, { repo: mockRepo });
 
 		const response = await app.inject({ method: 'GET', url: '/transactions' });
 		assert.equal(response.statusCode, 200);
@@ -61,9 +61,9 @@ describe('GET /transactions', () => {
 		};
 
 		const app = Fastify();
-		const { transactionsRoute } =
-			await import('../../src/infrastructure/routes/transactions.js');
-		app.register(transactionsRoute, { repo: mockRepo });
+		const { getTransactionsRoute } =
+			await import('../../../src/infrastructure/routes/internal/get-transactions.js');
+		app.register(getTransactionsRoute, { repo: mockRepo });
 
 		const response = await app.inject({ method: 'GET', url: '/transactions' });
 		assert.equal(response.statusCode, 500);

@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { Type, type Static } from '@sinclair/typebox';
 import { EnableBankingProvider } from '../../../adapters/banks/enablebanking/enablebanking-provider.js';
 import { SandboxBankProvider } from '../../../adapters/banks/sandbox-provider.js';
+import type { BankProvider } from '../../../ports/bank-provider.js';
 
 const Params = Type.Object({
     accountId: Type.String({ minLength: 1 }),
@@ -30,6 +31,7 @@ type Reply = Static<typeof Reply>;
 
 interface Options {
     sandbox?: boolean;
+    provider?: BankProvider;
 }
 
 export async function enableBankingTransactionsRoute(
@@ -43,9 +45,9 @@ export async function enableBankingTransactionsRoute(
             const { accountId } = request.params;
             const { date_from } = request.query;
             const dateFrom = date_from ?? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-            const bankProvider = opts.sandbox
+            const bankProvider = opts.provider ?? (opts.sandbox
                 ? new SandboxBankProvider('data/transations.json', accountId)
-                : new EnableBankingProvider(accountId, dateFrom);
+                : new EnableBankingProvider(accountId, dateFrom));
             const transactions = await bankProvider.fetchTransactions();
             
             return reply.send(transactions);
