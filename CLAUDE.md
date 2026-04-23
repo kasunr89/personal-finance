@@ -53,6 +53,7 @@ infrastructure/  → Fastify app wiring, route handlers, Lambda entrypoint
 | `LHV_CLIENT_ID`, `LHV_API_KEY` | LhvProvider |
 | `ENABLEBANKING_APP_ID`, `ENABLEBANKING_PRIVATE_KEY_PATH` | EnableBankingProvider (JWT signing) |
 | `ENABLEBANKING_SESSION_ID` | EnableBankingProvider |
+| `SYNC_SECRET` | `POST /api/v1_internal/sync-enablebanking` bearer token guard |
 
 ## Testing
 
