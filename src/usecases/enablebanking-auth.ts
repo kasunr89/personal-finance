@@ -1,4 +1,7 @@
-import type { EnableBankingAuthProvider, EnableBankingSession } from '../ports/enablebanking-auth-provider.js';
+import type {
+	EnableBankingAuthProvider,
+	EnableBankingSession,
+} from '../ports/enablebanking-auth-provider.js';
 
 const ACCESS_DAYS = 90;
 
@@ -25,4 +28,3 @@ export async function deleteEnableBankingSession(
 ): Promise<void> {
 	return provider.deleteSession(sessionId);
 }
-

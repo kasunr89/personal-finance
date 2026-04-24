@@ -1,0 +1,15 @@
+name: Sync Transactions
+
+on:
+  schedule:
+    - cron: '0 * * * *' # every hour
+  workflow_dispatch: # allow manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger sync
+        run: |
+          curl --fail -X POST "${{ secrets.API_BASE_URL }}/api/v1_internal/sync-enablebanking" \
+            -H "Authorization: Bearer ${{ secrets.SYNC_SECRET }}"

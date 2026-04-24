@@ -21,7 +21,10 @@ export interface EnableBankingSession {
 }
 
 export interface EnableBankingAuthProvider {
-	startAuth(redirectUrl: string, validUntil: string): Promise<{ url: string }>;
+	startAuth(
+		redirectUrl: string,
+		validUntil: string,
+	): Promise<{ url: string }>;
 	createSession(code: string): Promise<EnableBankingSession>;
 	getSession(sessionId: string): Promise<EnableBankingSession>;
 	deleteSession(sessionId: string): Promise<void>;

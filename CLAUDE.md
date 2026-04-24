@@ -51,8 +51,9 @@ infrastructure/  → Fastify app wiring, route handlers, Lambda entrypoint
 |---|---|
 | `DATABASE_URL` | NeonTransactionRepo |
 | `LHV_CLIENT_ID`, `LHV_API_KEY` | LhvProvider |
-| `ENABLEBANKING_APP_ID`, `ENABLEBANKING_PRIVATE_KEY_PATH` | EnableBankingProvider (JWT signing) |
-| `ENABLEBANKING_SESSION_ID` | EnableBankingProvider |
+| `ENABLEBANKING_APP_ID`, `ENABLEBANKING_PRIVATE_KEY_PATH` | EnableBankingAdapter (JWT signing) |
+| `ENABLEBANKING_SESSION_ID` | EnableBankingAdapter |
+| `ENABLEBANKING_ASPSP_NAME`, `ENABLEBANKING_ASPSP_COUNTRY` | EnableBankingAuthAdapter (e.g. `LHV Pank`, `EE`) |
 | `SYNC_SECRET` | `POST /api/v1_internal/sync-enablebanking` bearer token guard |
 
 ## Testing

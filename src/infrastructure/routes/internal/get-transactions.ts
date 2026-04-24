@@ -18,7 +18,9 @@ export async function getTransactionsRoute(
 			const transactions = await getTransactions(repo);
 			return reply.send(transactions);
 		} catch {
-			return reply.status(500).send({ error: 'Failed to fetch transactions' });
+			return reply
+				.status(500)
+				.send({ error: 'Failed to fetch transactions' });
 		}
 	});
 }

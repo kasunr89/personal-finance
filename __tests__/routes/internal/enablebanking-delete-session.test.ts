@@ -1,13 +1,18 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import Fastify from 'fastify';
-import type { EnableBankingAuthProvider, EnableBankingSession } from '../../../src/ports/enablebanking-auth-provider.js';
+import type {
+	EnableBankingAuthProvider,
+	EnableBankingSession,
+} from '../../../src/ports/enablebanking-auth-provider.js';
 
-function makeMockProvider(overrides?: Partial<EnableBankingAuthProvider>): EnableBankingAuthProvider {
+function makeMockProvider(
+	overrides?: Partial<EnableBankingAuthProvider>,
+): EnableBankingAuthProvider {
 	return {
 		startAuth: mock.fn(async () => ({ url: '' })),
-		createSession: mock.fn(async () => ({} as EnableBankingSession)),
-		getSession: mock.fn(async () => ({} as EnableBankingSession)),
+		createSession: mock.fn(async () => ({}) as EnableBankingSession),
+		getSession: mock.fn(async () => ({}) as EnableBankingSession),
 		deleteSession: mock.fn(async () => {}),
 		...overrides,
 	};
@@ -31,7 +36,9 @@ describe('DELETE /enablebanking/sessions/:sessionId', () => {
 
 	it('returns 500 when provider throws', async () => {
 		const provider = makeMockProvider({
-			deleteSession: mock.fn(async () => { throw new Error('delete failed'); }),
+			deleteSession: mock.fn(async () => {
+				throw new Error('delete failed');
+			}),
 		});
 
 		const app = Fastify({ logger: false });

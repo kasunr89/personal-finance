@@ -6,13 +6,16 @@ import { getTransactionsRoute } from './get-transactions.js';
 import { postSyncEnableBankingRoute } from './post-sync-enablebanking.js';
 
 interface Options {
-    sandbox?: boolean;
+	sandbox?: boolean;
 }
 
-export default function internalRoutes(fastify: FastifyInstance, opts: Options) {
-    fastify.register(enableBankingSessionRoute);
-    fastify.register(enableBankingTransactionsRoute, { sandbox: opts.sandbox });
-    fastify.register(enableBankingDeleteSessionRoute);
-    fastify.register(getTransactionsRoute);
-    fastify.register(postSyncEnableBankingRoute);
+export default function internalRoutes(
+	fastify: FastifyInstance,
+	opts: Options,
+) {
+	fastify.register(enableBankingSessionRoute);
+	fastify.register(enableBankingTransactionsRoute, { sandbox: opts.sandbox });
+	fastify.register(enableBankingDeleteSessionRoute);
+	fastify.register(getTransactionsRoute);
+	fastify.register(postSyncEnableBankingRoute);
 }

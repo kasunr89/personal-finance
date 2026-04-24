@@ -4,11 +4,14 @@ import authRoutes from './auth/index.js';
 import publicRoutes from './public/index.js';
 
 interface Options {
-    sandbox?: boolean;
+	sandbox?: boolean;
 }
 
 export default function routes(fastify: FastifyInstance, opts: Options) {
-    fastify.register(publicRoutes);
-    fastify.register(internalRoutes, { prefix: '/api/v1_internal', sandbox: opts.sandbox });
-    fastify.register(authRoutes, { prefix: '/auth' });
+	fastify.register(publicRoutes);
+	fastify.register(internalRoutes, {
+		prefix: '/api/v1_internal',
+		sandbox: opts.sandbox,
+	});
+	fastify.register(authRoutes, { prefix: '/auth' });
 }

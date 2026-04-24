@@ -8,8 +8,8 @@ export function buildApp() {
 	app.get('/health', async () => {
 		return { status: 'ok' };
 	})
-	.register(dbPlugin)
-	.register(routes, { sandbox: process.env.SANDBOX === 'true' });
+		.register(dbPlugin)
+		.register(routes, { sandbox: process.env.SANDBOX === 'true' });
 
 	return app;
 }

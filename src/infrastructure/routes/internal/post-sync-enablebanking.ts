@@ -1,8 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import type { BankProvider } from '../../../ports/bank-provider.js';
 import type { TransactionRepo } from '../../../ports/transaction-repo.js';
-import { EnableBankingProvider } from '../../../adapters/banks/enablebanking/enablebanking-provider.js';
+import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
+import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
 import { syncTransactions } from '../../../usecases/sync-transactions.js';
 
 interface Options {
@@ -37,7 +38,11 @@ export async function postSyncEnableBankingRoute(
 
 		const provider =
 			opts.provider ??
-			new EnableBankingProvider(query.accountUid!, query.dateFrom!);
+			new EnableBankingAdapter(
+				new EnableBankingHttpClient(),
+				query.accountUid!,
+				query.dateFrom!,
+			);
 
 		try {
 			const result = await syncTransactions(provider, repo);

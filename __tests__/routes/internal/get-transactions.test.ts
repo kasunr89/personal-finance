@@ -27,7 +27,10 @@ describe('GET /transactions', () => {
 			await import('../../../src/infrastructure/routes/internal/get-transactions.js');
 		app.register(getTransactionsRoute, { repo: mockRepo });
 
-		const response = await app.inject({ method: 'GET', url: '/transactions' });
+		const response = await app.inject({
+			method: 'GET',
+			url: '/transactions',
+		});
 		assert.equal(response.statusCode, 200);
 		const body = JSON.parse(response.body);
 		assert.equal(body.length, 1);
@@ -47,7 +50,10 @@ describe('GET /transactions', () => {
 			await import('../../../src/infrastructure/routes/internal/get-transactions.js');
 		app.register(getTransactionsRoute, { repo: mockRepo });
 
-		const response = await app.inject({ method: 'GET', url: '/transactions' });
+		const response = await app.inject({
+			method: 'GET',
+			url: '/transactions',
+		});
 		assert.equal(response.statusCode, 200);
 		assert.deepEqual(JSON.parse(response.body), []);
 	});
@@ -65,8 +71,13 @@ describe('GET /transactions', () => {
 			await import('../../../src/infrastructure/routes/internal/get-transactions.js');
 		app.register(getTransactionsRoute, { repo: mockRepo });
 
-		const response = await app.inject({ method: 'GET', url: '/transactions' });
+		const response = await app.inject({
+			method: 'GET',
+			url: '/transactions',
+		});
 		assert.equal(response.statusCode, 500);
-		assert.deepEqual(JSON.parse(response.body), { error: 'Failed to fetch transactions' });
+		assert.deepEqual(JSON.parse(response.body), {
+			error: 'Failed to fetch transactions',
+		});
 	});
 });

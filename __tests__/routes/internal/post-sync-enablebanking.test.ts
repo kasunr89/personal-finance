@@ -21,14 +21,20 @@ async function buildApp() {
 	const app = Fastify({ logger: false });
 	const { postSyncEnableBankingRoute } =
 		await import('../../../src/infrastructure/routes/internal/post-sync-enablebanking.js');
-	app.register(postSyncEnableBankingRoute, { provider: mockProvider, repo: mockRepo });
+	app.register(postSyncEnableBankingRoute, {
+		provider: mockProvider,
+		repo: mockRepo,
+	});
 	return app;
 }
 
 describe('POST /sync-enablebanking', () => {
 	it('returns 401 when Authorization header is missing', async () => {
 		const app = await buildApp();
-		const response = await app.inject({ method: 'POST', url: '/sync-enablebanking' });
+		const response = await app.inject({
+			method: 'POST',
+			url: '/sync-enablebanking',
+		});
 		assert.equal(response.statusCode, 401);
 		assert.deepEqual(JSON.parse(response.body), { error: 'Unauthorized' });
 	});
@@ -67,7 +73,9 @@ describe('POST /sync-enablebanking', () => {
 			headers: { authorization: AUTH },
 		});
 		assert.equal(response.statusCode, 400);
-		assert.deepEqual(JSON.parse(response.body), { error: 'accountUid and dateFrom query params required' });
+		assert.deepEqual(JSON.parse(response.body), {
+			error: 'accountUid and dateFrom query params required',
+		});
 	});
 
 	it('returns 503 on Enable Banking API error', async () => {
@@ -80,7 +88,10 @@ describe('POST /sync-enablebanking', () => {
 		const app = Fastify({ logger: false });
 		const { postSyncEnableBankingRoute } =
 			await import('../../../src/infrastructure/routes/internal/post-sync-enablebanking.js');
-		app.register(postSyncEnableBankingRoute, { provider: failingProvider, repo: mockRepo });
+		app.register(postSyncEnableBankingRoute, {
+			provider: failingProvider,
+			repo: mockRepo,
+		});
 
 		const response = await app.inject({
 			method: 'POST',
@@ -88,7 +99,9 @@ describe('POST /sync-enablebanking', () => {
 			headers: { authorization: AUTH },
 		});
 		assert.equal(response.statusCode, 503);
-		assert.deepEqual(JSON.parse(response.body), { error: 'Enable Banking API unavailable' });
+		assert.deepEqual(JSON.parse(response.body), {
+			error: 'Enable Banking API unavailable',
+		});
 	});
 
 	it('returns 500 on unexpected error', async () => {
@@ -101,7 +114,10 @@ describe('POST /sync-enablebanking', () => {
 		const app = Fastify({ logger: false });
 		const { postSyncEnableBankingRoute } =
 			await import('../../../src/infrastructure/routes/internal/post-sync-enablebanking.js');
-		app.register(postSyncEnableBankingRoute, { provider: failingProvider, repo: mockRepo });
+		app.register(postSyncEnableBankingRoute, {
+			provider: failingProvider,
+			repo: mockRepo,
+		});
 
 		const response = await app.inject({
 			method: 'POST',

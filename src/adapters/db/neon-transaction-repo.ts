@@ -21,7 +21,9 @@ export class NeonTransactionRepo implements TransactionRepo {
 					created_at: t.bookingDate as unknown as Date,
 				})
 				.onConflict((oc) =>
-					oc.columns(['account_id', 'source', 'source_id']).doNothing(),
+					oc
+						.columns(['account_id', 'source', 'source_id'])
+						.doNothing(),
 				)
 				.returning('id')
 				.executeTakeFirst();

@@ -17,19 +17,24 @@ describe('dbPlugin', () => {
 		app.register(dbPlugin);
 		await app.ready();
 		assert.ok(app.db, 'app.db should be defined');
-		assert.strictEqual(typeof app.db.selectFrom, 'function', 'app.db should expose Kysely query builder');
-		assert.strictEqual(typeof app.db.destroy, 'function', 'app.db should expose Kysely destroy method');
+		assert.strictEqual(
+			typeof app.db.selectFrom,
+			'function',
+			'app.db should expose Kysely query builder',
+		);
+		assert.strictEqual(
+			typeof app.db.destroy,
+			'function',
+			'app.db should expose Kysely destroy method',
+		);
 	});
 
 	it('throws if DATABASE_URL is not set', async () => {
 		delete process.env.DATABASE_URL;
 		app = Fastify();
 		app.register(dbPlugin);
-		await assert.rejects(
-			async () => {
-				await app.ready();
-			},
-			/DATABASE_URL environment variable is required/,
-		);
+		await assert.rejects(async () => {
+			await app.ready();
+		}, /DATABASE_URL environment variable is required/);
 	});
 });
