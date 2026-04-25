@@ -1,7 +1,7 @@
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import type { BankSession, Transaction } from '../../domain/types.js';
-import type { EnableBankingHttpPort } from '../../ports/enablebanking-http-port.js';
+import type { EnableBankingGateway } from '../../ports/enablebanking-gateway.js';
 
 const API_BASE = 'https://api.enablebanking.com';
 
@@ -52,7 +52,7 @@ function toBankSession(raw: EnableBankingSession): BankSession {
 	};
 }
 
-export class EnableBankingHttpClient implements EnableBankingHttpPort {
+export class EnableBankingHttpClient implements EnableBankingGateway {
 	private makeJwt(): string {
 		const appId = process.env.ENABLEBANKING_APP_ID;
 		const keyPath = process.env.ENABLEBANKING_PRIVATE_KEY_PATH;

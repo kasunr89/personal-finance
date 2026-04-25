@@ -1,11 +1,11 @@
 import type { BankSession } from '../../../domain/types.js';
 import type { EnableBankingAuthProvider } from '../../../ports/enablebanking-auth-provider.js';
-import type { EnableBankingHttpPort } from '../../../ports/enablebanking-http-port.js';
+import type { EnableBankingGateway } from '../../../ports/enablebanking-gateway.js';
 
 export class EnableBankingAuthAdapter implements EnableBankingAuthProvider {
 	private readonly aspsp: { name: string; country: string };
 
-	constructor(private client: EnableBankingHttpPort) {
+	constructor(private client: EnableBankingGateway) {
 		const name = process.env.ENABLEBANKING_ASPSP_NAME;
 		const country = process.env.ENABLEBANKING_ASPSP_COUNTRY;
 		if (!name || !country) {

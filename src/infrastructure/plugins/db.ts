@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 import type { FastifyInstance } from 'fastify';
-import { createDb } from '../../adapters/db/kysely.js';
+import { createDb } from '../db/create-db.js';
 import type { Database } from '../../adapters/db/schema.js';
 import type { Kysely } from 'kysely';
 

@@ -1,7 +1,7 @@
 import type { BankSession } from '../domain/types.js';
 import type { Transaction } from '../domain/types.js';
 
-export interface EnableBankingHttpPort {
+export interface EnableBankingGateway {
 	startAuth(
 		aspsp: { name: string; country: string },
 		redirectUrl: string,

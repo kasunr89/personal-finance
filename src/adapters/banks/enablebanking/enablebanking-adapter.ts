@@ -1,10 +1,10 @@
 import type { Transaction } from '../../../domain/types.js';
 import type { BankProvider } from '../../../ports/bank-provider.js';
-import type { EnableBankingHttpPort } from '../../../ports/enablebanking-http-port.js';
+import type { EnableBankingGateway } from '../../../ports/enablebanking-gateway.js';
 
 export class EnableBankingAdapter implements BankProvider {
 	constructor(
-		private client: EnableBankingHttpPort,
+		private client: EnableBankingGateway,
 		private accountUid: string,
 		private dateFrom: string,
 	) {}

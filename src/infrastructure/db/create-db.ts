@@ -1,7 +1,7 @@
 import { Kysely } from 'kysely';
 import { NeonDialect } from 'kysely-neon';
 import { neon } from '@neondatabase/serverless';
-import type { Database } from './schema.js';
+import type { Database } from '../../adapters/db/schema.js';
 
 export function createDb(connectionString: string): Kysely<Database> {
 	return new Kysely<Database>({
