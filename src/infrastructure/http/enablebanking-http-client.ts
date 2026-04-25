@@ -1,12 +1,56 @@
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
-import type { EnableBankingSession } from '../../ports/enablebanking-auth-provider.js';
-import type {
-	EnableBankingHttpPort,
-	EnableBankingTransaction,
-} from '../../ports/enablebanking-http-port.js';
+import type { BankSession, Transaction } from '../../domain/types.js';
+import type { EnableBankingHttpPort } from '../../ports/enablebanking-http-port.js';
 
 const API_BASE = 'https://api.enablebanking.com';
+
+interface EnableBankingSession {
+	status: string;
+	accounts: string[];
+	accounts_data: Array<{
+		uid: string;
+		identification_hash: string;
+		identification_hashes: string[];
+	}>;
+	aspsp: { name: string; country: string };
+	psu_type: string;
+	psu_id_hash: string;
+	access: {
+		accounts: string[] | null;
+		balances: boolean;
+		transactions: boolean;
+		valid_until: string;
+	};
+	created: string;
+	authorized: string | null;
+	closed: string | null;
+}
+
+interface EnableBankingTransaction {
+	entry_reference: string;
+	transaction_id: string | null;
+	booking_date: string;
+	transaction_amount: { amount: string; currency: string };
+	remittance_information_unstructured: string;
+	remittance_information: string[];
+	credit_debit_indicator: string;
+	creditor: { name: string | null } | null;
+	debtor: { name: string | null } | null;
+	[key: string]: unknown;
+}
+
+function toBankSession(raw: EnableBankingSession): BankSession {
+	return {
+		status: raw.status,
+		accounts: raw.accounts,
+		accountsData: raw.accounts_data.map((a) => ({
+			uid: a.uid,
+			identificationHash: a.identification_hash,
+		})),
+		validUntil: raw.access.valid_until,
+	};
+}
 
 export class EnableBankingHttpClient implements EnableBankingHttpPort {
 	private makeJwt(): string {
@@ -77,17 +121,19 @@ export class EnableBankingHttpClient implements EnableBankingHttpPort {
 		})) as { url: string };
 	}
 
-	async createSession(code: string): Promise<EnableBankingSession> {
-		return (await this.apiRequest('POST', '/sessions', {
+	async createSession(code: string): Promise<BankSession> {
+		const raw = (await this.apiRequest('POST', '/sessions', {
 			code,
 		})) as EnableBankingSession;
+		return toBankSession(raw);
 	}
 
-	async getSession(sessionId: string): Promise<EnableBankingSession> {
-		return (await this.apiRequest(
+	async getSession(sessionId: string): Promise<BankSession> {
+		const raw = (await this.apiRequest(
 			'GET',
 			`/sessions/${sessionId}`,
 		)) as EnableBankingSession;
+		return toBankSession(raw);
 	}
 
 	async deleteSession(sessionId: string): Promise<void> {
@@ -97,7 +143,7 @@ export class EnableBankingHttpClient implements EnableBankingHttpPort {
 	async getAllTransactions(
 		accountUid: string,
 		dateFrom: string,
-	): Promise<EnableBankingTransaction[]> {
+	): Promise<Transaction[]> {
 		const all: EnableBankingTransaction[] = [];
 		let continuationKey: string | undefined;
 
@@ -118,6 +164,17 @@ export class EnableBankingHttpClient implements EnableBankingHttpPort {
 			continuationKey = res.continuation_key;
 		} while (continuationKey);
 
-		return all;
+		return all.map(
+			(t): Transaction => ({
+				id: '',
+				accountId: accountUid,
+				amount: parseFloat(t.transaction_amount.amount),
+				currency: t.transaction_amount.currency,
+				description: t.remittance_information[0] ?? null,
+				bookingDate: t.booking_date,
+				source: 'enablebanking',
+				sourceId: t.transaction_id ?? t.entry_reference,
+			}),
+		);
 	}
 }

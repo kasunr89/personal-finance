@@ -27,7 +27,7 @@ export async function enableBankingCallbackRoute(
 
 		return reply.send({
 			accounts: session.accounts,
-			accounts_data: session.accounts_data,
+			accountsData: session.accountsData,
 		});
 	});
 }

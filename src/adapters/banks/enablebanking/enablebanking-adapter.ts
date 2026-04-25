@@ -10,22 +10,6 @@ export class EnableBankingAdapter implements BankProvider {
 	) {}
 
 	async getTransactions(): Promise<Transaction[]> {
-		const raw = await this.client.getAllTransactions(
-			this.accountUid,
-			this.dateFrom,
-		);
-
-		return raw.map(
-			(t): Transaction => ({
-				id: '',
-				accountId: this.accountUid,
-				amount: parseFloat(t.transaction_amount.amount),
-				currency: t.transaction_amount.currency,
-				description: t.remittance_information[0] ?? null,
-				bookingDate: t.booking_date,
-				source: 'enablebanking',
-				sourceId: t.transaction_id ?? t.entry_reference,
-			}),
-		);
+		return this.client.getAllTransactions(this.accountUid, this.dateFrom);
 	}
 }

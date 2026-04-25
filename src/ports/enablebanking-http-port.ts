@@ -1,17 +1,5 @@
-import type { EnableBankingSession } from './enablebanking-auth-provider.js';
-
-export interface EnableBankingTransaction {
-	entry_reference: string;
-	transaction_id: string | null;
-	booking_date: string;
-	transaction_amount: { amount: string; currency: string };
-	remittance_information_unstructured: string;
-	remittance_information: string[];
-	credit_debit_indicator: string;
-	creditor: { name: string | null } | null;
-	debtor: { name: string | null } | null;
-	[key: string]: unknown;
-}
+import type { BankSession } from '../domain/types.js';
+import type { Transaction } from '../domain/types.js';
 
 export interface EnableBankingHttpPort {
 	startAuth(
@@ -19,11 +7,11 @@ export interface EnableBankingHttpPort {
 		redirectUrl: string,
 		validUntil: string,
 	): Promise<{ url: string }>;
-	createSession(code: string): Promise<EnableBankingSession>;
-	getSession(sessionId: string): Promise<EnableBankingSession>;
+	createSession(code: string): Promise<BankSession>;
+	getSession(sessionId: string): Promise<BankSession>;
 	deleteSession(sessionId: string): Promise<void>;
 	getAllTransactions(
 		accountUid: string,
 		dateFrom: string,
-	): Promise<EnableBankingTransaction[]>;
+	): Promise<Transaction[]>;
 }

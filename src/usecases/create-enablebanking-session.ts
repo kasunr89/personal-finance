@@ -1,8 +1,9 @@
-import type { EnableBankingAuthProvider, EnableBankingSession } from '../ports/enablebanking-auth-provider.js';
+import type { BankSession } from '../domain/types.js';
+import type { EnableBankingAuthProvider } from '../ports/enablebanking-auth-provider.js';
 
 export async function createEnableBankingSession(
 	provider: EnableBankingAuthProvider,
 	code: string,
-): Promise<EnableBankingSession> {
+): Promise<BankSession> {
 	return provider.createSession(code);
 }

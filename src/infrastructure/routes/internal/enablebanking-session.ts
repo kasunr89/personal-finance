@@ -12,25 +12,13 @@ const Params = Type.Object({
 const Reply = Type.Object({
 	status: Type.String(),
 	accounts: Type.Array(Type.String()),
-	accounts_data: Type.Array(
+	accountsData: Type.Array(
 		Type.Object({
 			uid: Type.String(),
-			identification_hash: Type.String(),
-			identification_hashes: Type.Array(Type.String()),
+			identificationHash: Type.String(),
 		}),
 	),
-	aspsp: Type.Object({ name: Type.String(), country: Type.String() }),
-	psu_type: Type.String(),
-	psu_id_hash: Type.String(),
-	access: Type.Object({
-		accounts: Type.Union([Type.Array(Type.String()), Type.Null()]),
-		balances: Type.Boolean(),
-		transactions: Type.Boolean(),
-		valid_until: Type.String(),
-	}),
-	created: Type.String(),
-	authorized: Type.Union([Type.String(), Type.Null()]),
-	closed: Type.Union([Type.String(), Type.Null()]),
+	validUntil: Type.String(),
 });
 
 type Params = Static<typeof Params>;

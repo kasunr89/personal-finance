@@ -1,3 +1,10 @@
+export interface BankSession {
+	status: string;
+	accounts: string[];
+	accountsData: Array<{ uid: string; identificationHash: string }>;
+	validUntil: string;
+}
+
 /** A transaction row as returned from the database (snake_case, DB-native types). */
 export interface StoredTransaction {
 	/** Auto-incremented database primary key. */

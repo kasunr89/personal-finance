@@ -1,33 +1,14 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import Fastify from 'fastify';
-import type {
-	EnableBankingAuthProvider,
-	EnableBankingSession,
-} from '../../../src/ports/enablebanking-auth-provider.js';
+import type { BankSession } from '../../../src/domain/types.js';
+import type { EnableBankingAuthProvider } from '../../../src/ports/enablebanking-auth-provider.js';
 
-const mockSession: EnableBankingSession = {
+const mockSession: BankSession = {
 	status: 'AUTHORIZED',
 	accounts: ['acc-1'],
-	accounts_data: [
-		{
-			uid: 'acc-1',
-			identification_hash: 'hash1',
-			identification_hashes: ['hash1'],
-		},
-	],
-	aspsp: { name: 'Test Bank', country: 'EE' },
-	psu_type: 'personal',
-	psu_id_hash: 'psuhash',
-	access: {
-		accounts: ['acc-1'],
-		balances: true,
-		transactions: true,
-		valid_until: '2026-07-01',
-	},
-	created: '2026-04-23T00:00:00Z',
-	authorized: '2026-04-23T00:00:00Z',
-	closed: null,
+	accountsData: [{ uid: 'acc-1', identificationHash: 'hash1' }],
+	validUntil: '2026-07-01',
 };
 
 function makeMockProvider(
@@ -59,7 +40,8 @@ describe('GET /enablebanking/sessions/:sessionId', () => {
 		const body = JSON.parse(response.body);
 		assert.equal(body.status, 'AUTHORIZED');
 		assert.deepEqual(body.accounts, ['acc-1']);
-		assert.equal(body.closed, null);
+		assert.equal(body.validUntil, '2026-07-01');
+		assert.equal(body.accountsData[0].uid, 'acc-1');
 	});
 
 	it('returns 500 when provider throws', async () => {

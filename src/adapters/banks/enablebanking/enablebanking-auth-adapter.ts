@@ -1,7 +1,5 @@
-import type {
-	EnableBankingAuthProvider,
-	EnableBankingSession,
-} from '../../../ports/enablebanking-auth-provider.js';
+import type { BankSession } from '../../../domain/types.js';
+import type { EnableBankingAuthProvider } from '../../../ports/enablebanking-auth-provider.js';
 import type { EnableBankingHttpPort } from '../../../ports/enablebanking-http-port.js';
 
 export class EnableBankingAuthAdapter implements EnableBankingAuthProvider {
@@ -25,11 +23,11 @@ export class EnableBankingAuthAdapter implements EnableBankingAuthProvider {
 		return this.client.startAuth(this.aspsp, redirectUrl, validUntil);
 	}
 
-	async createSession(code: string): Promise<EnableBankingSession> {
+	async createSession(code: string): Promise<BankSession> {
 		return this.client.createSession(code);
 	}
 
-	async getSession(sessionId: string): Promise<EnableBankingSession> {
+	async getSession(sessionId: string): Promise<BankSession> {
 		return this.client.getSession(sessionId);
 	}
 
