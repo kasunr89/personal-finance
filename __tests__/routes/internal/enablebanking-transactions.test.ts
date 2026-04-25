@@ -18,7 +18,7 @@ const mockTx: Transaction = {
 describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 	it('returns transactions for the given account', async () => {
 		const mockProvider: BankProvider = {
-			fetchTransactions: mock.fn(async () => [mockTx]),
+			getTransactions: mock.fn(async () => [mockTx]),
 		};
 
 		const app = Fastify();
@@ -42,7 +42,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 
 	it('returns empty array when no transactions', async () => {
 		const mockProvider: BankProvider = {
-			fetchTransactions: mock.fn(async () => []),
+			getTransactions: mock.fn(async () => []),
 		};
 
 		const app = Fastify();
@@ -62,7 +62,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 
 	it('returns 500 when provider throws', async () => {
 		const mockProvider: BankProvider = {
-			fetchTransactions: mock.fn(async () => {
+			getTransactions: mock.fn(async () => {
 				throw new Error('bank error');
 			}),
 		};

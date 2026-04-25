@@ -1,6 +1,6 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { syncTransactions } from '../../src/usecases/sync-transactions.js';
+import { syncTransactions } from '../../src/usecases/sync-bank-transactions.js';
 import type { BankProvider } from '../../src/ports/bank-provider.js';
 import type { TransactionRepo } from '../../src/ports/transaction-repo.js';
 import type { Transaction } from '../../src/domain/types.js';
@@ -19,7 +19,7 @@ const tx: Transaction = {
 describe('syncTransactions', () => {
 	it('fetches transactions and upserts them', async () => {
 		const provider: BankProvider = {
-			fetchTransactions: mock.fn(async () => [tx]),
+			getTransactions: mock.fn(async () => [tx]),
 		};
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => 1),
@@ -35,7 +35,7 @@ describe('syncTransactions', () => {
 
 	it('returns zero when provider returns no transactions', async () => {
 		const provider: BankProvider = {
-			fetchTransactions: mock.fn(async () => []),
+			getTransactions: mock.fn(async () => []),
 		};
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => 0),
@@ -51,7 +51,7 @@ describe('syncTransactions', () => {
 
 	it('propagates provider errors', async () => {
 		const provider: BankProvider = {
-			fetchTransactions: mock.fn(async () => {
+			getTransactions: mock.fn(async () => {
 				throw new Error('API down');
 			}),
 		};
@@ -67,7 +67,7 @@ describe('syncTransactions', () => {
 
 	it('propagates repo errors', async () => {
 		const provider: BankProvider = {
-			fetchTransactions: mock.fn(async () => [tx]),
+			getTransactions: mock.fn(async () => [tx]),
 		};
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => {

@@ -3,7 +3,7 @@ import { Type, type Static } from '@sinclair/typebox';
 import { EnableBankingAuthAdapter } from '../../../adapters/banks/enablebanking/enablebanking-auth-adapter.js';
 import type { EnableBankingAuthProvider } from '../../../ports/enablebanking-auth-provider.js';
 import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
-import { getEnableBankingSession } from '../../../usecases/enablebanking-auth.js';
+import { getEnableBankingSession } from '../../../usecases/get-enablebanking-session.js';
 
 const Params = Type.Object({
 	sessionId: Type.String(),

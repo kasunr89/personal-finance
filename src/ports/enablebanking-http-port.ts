@@ -22,7 +22,7 @@ export interface EnableBankingHttpPort {
 	createSession(code: string): Promise<EnableBankingSession>;
 	getSession(sessionId: string): Promise<EnableBankingSession>;
 	deleteSession(sessionId: string): Promise<void>;
-	fetchAllTransactions(
+	getAllTransactions(
 		accountUid: string,
 		dateFrom: string,
 	): Promise<EnableBankingTransaction[]>;

@@ -4,7 +4,7 @@ import type { TransactionRepo } from '../../../ports/transaction-repo.js';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
 import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
-import { syncTransactions } from '../../../usecases/sync-transactions.js';
+import { syncTransactions } from '../../../usecases/sync-bank-transactions.js';
 
 interface Options {
 	provider?: BankProvider;

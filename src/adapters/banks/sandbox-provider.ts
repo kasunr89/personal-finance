@@ -16,7 +16,7 @@ export class SandboxBankProvider implements BankProvider {
 		private readonly accountId: string,
 	) {}
 
-	async fetchTransactions(): Promise<Transaction[]> {
+	async getTransactions(): Promise<Transaction[]> {
 		const raw: RawTransaction[] = JSON.parse(
 			fs.readFileSync(this.filePath, 'utf-8'),
 		);

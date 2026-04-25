@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { EnableBankingAuthAdapter } from '../../../adapters/banks/enablebanking/enablebanking-auth-adapter.js';
 import type { EnableBankingAuthProvider } from '../../../ports/enablebanking-auth-provider.js';
 import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
-import { startEnableBankingAuth } from '../../../usecases/enablebanking-auth.js';
+import { startEnableBankingAuth } from '../../../usecases/start-enablebanking-auth.js';
 
 interface Options {
 	provider?: EnableBankingAuthProvider;

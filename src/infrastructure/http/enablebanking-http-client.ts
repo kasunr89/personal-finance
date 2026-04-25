@@ -94,7 +94,7 @@ export class EnableBankingHttpClient implements EnableBankingHttpPort {
 		await this.apiRequest('DELETE', `/sessions/${sessionId}`);
 	}
 
-	async fetchAllTransactions(
+	async getAllTransactions(
 		accountUid: string,
 		dateFrom: string,
 	): Promise<EnableBankingTransaction[]> {

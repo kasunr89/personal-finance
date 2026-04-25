@@ -9,8 +9,8 @@ export class EnableBankingAdapter implements BankProvider {
 		private dateFrom: string,
 	) {}
 
-	async fetchTransactions(): Promise<Transaction[]> {
-		const raw = await this.client.fetchAllTransactions(
+	async getTransactions(): Promise<Transaction[]> {
+		const raw = await this.client.getAllTransactions(
 			this.accountUid,
 			this.dateFrom,
 		);

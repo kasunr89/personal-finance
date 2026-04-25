@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import type { TransactionRepo } from '../../../ports/transaction-repo.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
-import { getTransactions } from '../../../usecases/sync-transactions.js';
+import { getStoredTransactions } from '../../../usecases/get-stored-transactions.js';
 
 interface Options {
 	repo?: TransactionRepo;
@@ -15,7 +15,7 @@ export async function getTransactionsRoute(
 
 	fastify.get('/transactions', async (_request, reply) => {
 		try {
-			const transactions = await getTransactions(repo);
+			const transactions = await getStoredTransactions(repo);
 			return reply.send(transactions);
 		} catch {
 			return reply

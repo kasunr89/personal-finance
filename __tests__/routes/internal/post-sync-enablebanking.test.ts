@@ -9,7 +9,7 @@ process.env.SYNC_SECRET = 'test-secret';
 const AUTH = 'Bearer test-secret';
 
 const mockProvider: BankProvider = {
-	fetchTransactions: mock.fn(async () => []),
+	getTransactions: mock.fn(async () => []),
 };
 
 const mockRepo: TransactionRepo = {
@@ -80,7 +80,7 @@ describe('POST /sync-enablebanking', () => {
 
 	it('returns 503 on Enable Banking API error', async () => {
 		const failingProvider: BankProvider = {
-			fetchTransactions: mock.fn(async () => {
+			getTransactions: mock.fn(async () => {
 				throw new Error('Enable Banking API error: 503');
 			}),
 		};
@@ -106,7 +106,7 @@ describe('POST /sync-enablebanking', () => {
 
 	it('returns 500 on unexpected error', async () => {
 		const failingProvider: BankProvider = {
-			fetchTransactions: mock.fn(async () => {
+			getTransactions: mock.fn(async () => {
 				throw new Error('Unexpected failure');
 			}),
 		};

@@ -4,6 +4,7 @@ import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enab
 import { SandboxBankProvider } from '../../../adapters/banks/sandbox-provider.js';
 import type { BankProvider } from '../../../ports/bank-provider.js';
 import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
+import { getBankTransactions } from '../../../usecases/get-bank-transactions.js';
 
 const Params = Type.Object({
 	accountId: Type.String({ minLength: 1 }),
@@ -68,7 +69,7 @@ export async function enableBankingTransactionsRoute(
 							accountId,
 							dateFrom,
 						));
-			const transactions = await bankProvider.fetchTransactions();
+			const transactions = await getBankTransactions(bankProvider);
 
 			return reply.send(transactions);
 		},
