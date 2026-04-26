@@ -1,8 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { Type, type Static } from '@sinclair/typebox';
-import { EnableBankingAuthAdapter } from '../../../adapters/banks/enablebanking/enablebanking-auth-adapter.js';
-import type { EnableBankingAuthProvider } from '../../../ports/enablebanking-auth-provider.js';
-import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
+import type { EnableBankingGateway } from '../../../ports/enablebanking-gateway.js';
+import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { getEnableBankingSession } from '../../../usecases/get-enablebanking-session.js';
 
 const Params = Type.Object({
@@ -25,16 +24,14 @@ type Params = Static<typeof Params>;
 type Reply = Static<typeof Reply>;
 
 interface Options {
-	provider?: EnableBankingAuthProvider;
+	provider?: EnableBankingGateway;
 }
 
 export async function enableBankingSessionRoute(
 	fastify: FastifyInstance,
 	opts: Options = {},
 ) {
-	const provider =
-		opts.provider ??
-		new EnableBankingAuthAdapter(new EnableBankingHttpClient());
+	const provider = opts.provider ?? new EnableBankingClient();
 
 	fastify.get<{ Params: Params; Reply: Reply }>(
 		'/enablebanking/sessions/:sessionId',

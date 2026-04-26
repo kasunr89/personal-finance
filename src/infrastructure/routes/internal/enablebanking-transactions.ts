@@ -3,7 +3,7 @@ import { Type, type Static } from '@sinclair/typebox';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { SandboxBankProvider } from '../../../adapters/banks/sandbox-provider.js';
 import type { BankProvider } from '../../../ports/bank-provider.js';
-import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
+import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { getBankTransactions } from '../../../usecases/get-bank-transactions.js';
 
 const Params = Type.Object({
@@ -65,7 +65,7 @@ export async function enableBankingTransactionsRoute(
 							accountId,
 						)
 					: new EnableBankingAdapter(
-							new EnableBankingHttpClient(),
+							new EnableBankingClient(),
 							accountId,
 							dateFrom,
 						));

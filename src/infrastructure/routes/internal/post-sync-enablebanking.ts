@@ -3,7 +3,7 @@ import type { BankProvider } from '../../../ports/bank-provider.js';
 import type { TransactionRepo } from '../../../ports/transaction-repo.js';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
-import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
+import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { syncTransactions } from '../../../usecases/sync-bank-transactions.js';
 
 interface Options {
@@ -39,7 +39,7 @@ export async function postSyncEnableBankingRoute(
 		const provider =
 			opts.provider ??
 			new EnableBankingAdapter(
-				new EnableBankingHttpClient(),
+				new EnableBankingClient(),
 				query.accountUid!,
 				query.dateFrom!,
 			);

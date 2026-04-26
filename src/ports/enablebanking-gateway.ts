@@ -3,7 +3,6 @@ import type { Transaction } from '../domain/types.js';
 
 export interface EnableBankingGateway {
 	startAuth(
-		aspsp: { name: string; country: string },
 		redirectUrl: string,
 		validUntil: string,
 	): Promise<{ url: string }>;

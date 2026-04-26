@@ -52,7 +52,7 @@ function toBankSession(raw: EnableBankingSession): BankSession {
 	};
 }
 
-export class EnableBankingHttpClient implements EnableBankingGateway {
+export class EnableBankingClient implements EnableBankingGateway {
 	private makeJwt(): string {
 		const appId = process.env.ENABLEBANKING_APP_ID;
 		const keyPath = process.env.ENABLEBANKING_PRIVATE_KEY_PATH;
@@ -107,13 +107,19 @@ export class EnableBankingHttpClient implements EnableBankingGateway {
 	}
 
 	async startAuth(
-		aspsp: { name: string; country: string },
 		redirectUrl: string,
 		validUntil: string,
 	): Promise<{ url: string }> {
+		const name = process.env.ENABLEBANKING_ASPSP_NAME;
+		const country = process.env.ENABLEBANKING_ASPSP_COUNTRY;
+		if (!name || !country) {
+			throw new Error(
+				'ENABLEBANKING_ASPSP_NAME and ENABLEBANKING_ASPSP_COUNTRY are required',
+			);
+		}
 		return (await this.apiRequest('POST', '/auth', {
 			access: { valid_until: validUntil },
-			aspsp,
+			aspsp: { name, country },
 			state: crypto.randomUUID(),
 			redirect_url: redirectUrl,
 			psu_type: 'personal',

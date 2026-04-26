@@ -1,9 +1,9 @@
-import type { EnableBankingAuthProvider } from '../ports/enablebanking-auth-provider.js';
+import type { EnableBankingGateway } from '../ports/enablebanking-gateway.js';
 
 const ACCESS_DAYS = 90;
 
 export async function startEnableBankingAuth(
-	provider: EnableBankingAuthProvider,
+	provider: EnableBankingGateway,
 	redirectUrl: string,
 ): Promise<{ url: string }> {
 	const validUntil = new Date(

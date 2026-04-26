@@ -2,7 +2,7 @@ import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import Fastify from 'fastify';
 import type { BankSession } from '../../../src/domain/types.js';
-import type { EnableBankingAuthProvider } from '../../../src/ports/enablebanking-auth-provider.js';
+import type { EnableBankingGateway } from '../../../src/ports/enablebanking-gateway.js';
 
 const mockSession: BankSession = {
 	status: 'AUTHORIZED',
@@ -12,13 +12,14 @@ const mockSession: BankSession = {
 };
 
 function makeMockProvider(
-	overrides?: Partial<EnableBankingAuthProvider>,
-): EnableBankingAuthProvider {
+	overrides?: Partial<EnableBankingGateway>,
+): EnableBankingGateway {
 	return {
 		startAuth: mock.fn(async () => ({ url: '' })),
 		createSession: mock.fn(async () => mockSession),
 		getSession: mock.fn(async () => mockSession),
 		deleteSession: mock.fn(async () => {}),
+		getAllTransactions: mock.fn(async () => []),
 		...overrides,
 	};
 }

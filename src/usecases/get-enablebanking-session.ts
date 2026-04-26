@@ -1,8 +1,8 @@
 import type { BankSession } from '../domain/types.js';
-import type { EnableBankingAuthProvider } from '../ports/enablebanking-auth-provider.js';
+import type { EnableBankingGateway } from '../ports/enablebanking-gateway.js';
 
 export async function getEnableBankingSession(
-	provider: EnableBankingAuthProvider,
+	provider: EnableBankingGateway,
 	sessionId: string,
 ): Promise<BankSession> {
 	return provider.getSession(sessionId);

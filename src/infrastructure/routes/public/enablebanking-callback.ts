@@ -1,20 +1,17 @@
 import type { FastifyInstance } from 'fastify';
-import { EnableBankingAuthAdapter } from '../../../adapters/banks/enablebanking/enablebanking-auth-adapter.js';
-import type { EnableBankingAuthProvider } from '../../../ports/enablebanking-auth-provider.js';
-import { EnableBankingHttpClient } from '../../http/enablebanking-http-client.js';
+import type { EnableBankingGateway } from '../../../ports/enablebanking-gateway.js';
+import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { createEnableBankingSession } from '../../../usecases/create-enablebanking-session.js';
 
 interface Options {
-	provider?: EnableBankingAuthProvider;
+	provider?: EnableBankingGateway;
 }
 
 export async function enableBankingCallbackRoute(
 	fastify: FastifyInstance,
 	opts: Options = {},
 ) {
-	const provider =
-		opts.provider ??
-		new EnableBankingAuthAdapter(new EnableBankingHttpClient());
+	const provider = opts.provider ?? new EnableBankingClient();
 
 	fastify.get('/callback', async (request, reply) => {
 		const { code } = request.query as { code?: string };
