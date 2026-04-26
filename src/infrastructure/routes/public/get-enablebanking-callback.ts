@@ -7,7 +7,7 @@ interface Options {
 	provider?: EnableBankingGateway;
 }
 
-export async function enableBankingCallbackRoute(
+export async function getEnableBankingCallbackRoute(
 	fastify: FastifyInstance,
 	opts: Options = {},
 ) {

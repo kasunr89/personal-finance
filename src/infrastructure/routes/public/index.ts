@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
-import { enableBankingCallbackRoute } from './enablebanking-callback.js';
+import { getEnableBankingCallbackRoute } from './get-enablebanking-callback.js';
 
 export default function publicRoutes(fastify: FastifyInstance) {
-	fastify.register(enableBankingCallbackRoute);
+	fastify.register(getEnableBankingCallbackRoute);
 }

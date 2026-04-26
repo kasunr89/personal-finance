@@ -29,9 +29,9 @@ describe('GET /enablebanking/sessions/:sessionId', () => {
 		const provider = makeMockProvider();
 
 		const app = Fastify();
-		const { enableBankingSessionRoute } =
-			await import('../../../src/infrastructure/routes/internal/enablebanking-session.js');
-		app.register(enableBankingSessionRoute, { provider });
+		const { getEnableBankingSessionRoute } =
+			await import('../../../src/infrastructure/routes/internal/get-enablebanking-session.js');
+		app.register(getEnableBankingSessionRoute, { provider });
 
 		const response = await app.inject({
 			method: 'GET',
@@ -53,9 +53,9 @@ describe('GET /enablebanking/sessions/:sessionId', () => {
 		});
 
 		const app = Fastify({ logger: false });
-		const { enableBankingSessionRoute } =
-			await import('../../../src/infrastructure/routes/internal/enablebanking-session.js');
-		app.register(enableBankingSessionRoute, { provider });
+		const { getEnableBankingSessionRoute } =
+			await import('../../../src/infrastructure/routes/internal/get-enablebanking-session.js');
+		app.register(getEnableBankingSessionRoute, { provider });
 
 		const response = await app.inject({
 			method: 'GET',

@@ -36,7 +36,7 @@ interface Options {
 	provider?: BankGateway;
 }
 
-export async function enableBankingTransactionsRoute(
+export async function getEnableBankingTransactionsRoute(
 	fastify: FastifyInstance,
 	opts: Options = {},
 ) {

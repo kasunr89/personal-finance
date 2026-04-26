@@ -22,9 +22,9 @@ describe('DELETE /enablebanking/sessions/:sessionId', () => {
 		const provider = makeMockProvider();
 
 		const app = Fastify();
-		const { enableBankingDeleteSessionRoute } =
-			await import('../../../src/infrastructure/routes/internal/enablebanking-delete-session.js');
-		app.register(enableBankingDeleteSessionRoute, { provider });
+		const { deleteEnableBankingSessionRoute } =
+			await import('../../../src/infrastructure/routes/internal/delete-enablebanking-session.js');
+		app.register(deleteEnableBankingSessionRoute, { provider });
 
 		const response = await app.inject({
 			method: 'DELETE',
@@ -41,9 +41,9 @@ describe('DELETE /enablebanking/sessions/:sessionId', () => {
 		});
 
 		const app = Fastify({ logger: false });
-		const { enableBankingDeleteSessionRoute } =
-			await import('../../../src/infrastructure/routes/internal/enablebanking-delete-session.js');
-		app.register(enableBankingDeleteSessionRoute, { provider });
+		const { deleteEnableBankingSessionRoute } =
+			await import('../../../src/infrastructure/routes/internal/delete-enablebanking-session.js');
+		app.register(deleteEnableBankingSessionRoute, { provider });
 
 		const response = await app.inject({
 			method: 'DELETE',

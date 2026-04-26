@@ -22,9 +22,9 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 		};
 
 		const app = Fastify();
-		const { enableBankingTransactionsRoute } =
-			await import('../../../src/infrastructure/routes/internal/enablebanking-transactions.js');
-		app.register(enableBankingTransactionsRoute, {
+		const { getEnableBankingTransactionsRoute } =
+			await import('../../../src/infrastructure/routes/internal/get-enablebanking-transactions.js');
+		app.register(getEnableBankingTransactionsRoute, {
 			provider: mockProvider,
 		});
 
@@ -46,9 +46,9 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 		};
 
 		const app = Fastify();
-		const { enableBankingTransactionsRoute } =
-			await import('../../../src/infrastructure/routes/internal/enablebanking-transactions.js');
-		app.register(enableBankingTransactionsRoute, {
+		const { getEnableBankingTransactionsRoute } =
+			await import('../../../src/infrastructure/routes/internal/get-enablebanking-transactions.js');
+		app.register(getEnableBankingTransactionsRoute, {
 			provider: mockProvider,
 		});
 
@@ -68,9 +68,9 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 		};
 
 		const app = Fastify({ logger: false });
-		const { enableBankingTransactionsRoute } =
-			await import('../../../src/infrastructure/routes/internal/enablebanking-transactions.js');
-		app.register(enableBankingTransactionsRoute, {
+		const { getEnableBankingTransactionsRoute } =
+			await import('../../../src/infrastructure/routes/internal/get-enablebanking-transactions.js');
+		app.register(getEnableBankingTransactionsRoute, {
 			provider: mockProvider,
 		});
 

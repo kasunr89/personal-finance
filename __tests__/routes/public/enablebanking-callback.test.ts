@@ -27,9 +27,9 @@ function makeMockProvider(
 describe('GET /callback', () => {
 	it('returns 400 when code is missing', async () => {
 		const app = Fastify();
-		const { enableBankingCallbackRoute } =
-			await import('../../../src/infrastructure/routes/public/enablebanking-callback.js');
-		app.register(enableBankingCallbackRoute, {
+		const { getEnableBankingCallbackRoute } =
+			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
+		app.register(getEnableBankingCallbackRoute, {
 			provider: makeMockProvider(),
 		});
 
@@ -44,9 +44,9 @@ describe('GET /callback', () => {
 		const provider = makeMockProvider();
 
 		const app = Fastify();
-		const { enableBankingCallbackRoute } =
-			await import('../../../src/infrastructure/routes/public/enablebanking-callback.js');
-		app.register(enableBankingCallbackRoute, { provider });
+		const { getEnableBankingCallbackRoute } =
+			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
+		app.register(getEnableBankingCallbackRoute, { provider });
 
 		const response = await app.inject({
 			method: 'GET',
@@ -66,9 +66,9 @@ describe('GET /callback', () => {
 		});
 
 		const app = Fastify({ logger: false });
-		const { enableBankingCallbackRoute } =
-			await import('../../../src/infrastructure/routes/public/enablebanking-callback.js');
-		app.register(enableBankingCallbackRoute, { provider });
+		const { getEnableBankingCallbackRoute } =
+			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
+		app.register(getEnableBankingCallbackRoute, { provider });
 
 		const response = await app.inject({
 			method: 'GET',

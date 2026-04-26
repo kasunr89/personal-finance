@@ -24,9 +24,9 @@ describe('GET /enablebanking/start', () => {
 		const provider = makeMockProvider();
 
 		const app = Fastify();
-		const { enableBankingStartRoute } =
-			await import('../../../src/infrastructure/routes/auth/enablebanking-start.js');
-		app.register(enableBankingStartRoute, { provider });
+		const { getEnableBankingStartRoute } =
+			await import('../../../src/infrastructure/routes/auth/get-enablebanking-start.js');
+		app.register(getEnableBankingStartRoute, { provider });
 
 		const response = await app.inject({
 			method: 'GET',
@@ -46,9 +46,9 @@ describe('GET /enablebanking/start', () => {
 		});
 
 		const app = Fastify({ logger: false });
-		const { enableBankingStartRoute } =
-			await import('../../../src/infrastructure/routes/auth/enablebanking-start.js');
-		app.register(enableBankingStartRoute, { provider });
+		const { getEnableBankingStartRoute } =
+			await import('../../../src/infrastructure/routes/auth/get-enablebanking-start.js');
+		app.register(getEnableBankingStartRoute, { provider });
 
 		const response = await app.inject({
 			method: 'GET',
