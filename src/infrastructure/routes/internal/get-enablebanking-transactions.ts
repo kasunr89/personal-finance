@@ -1,9 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import { Type, type Static } from '@sinclair/typebox';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
-import { SandboxBankProvider } from '../../../adapters/banks/sandbox-provider.js';
 import type { BankGateway } from '../../../ports/bank-gateway.js';
 import { EnableBankingClient } from '../../http/enablebanking-client.js';
+import { FileEnableBankingClient } from '../../file/file-enablebanking-client.js';
 import { getBankTransactions } from '../../../usecases/get-bank-transactions.js';
 
 const Params = Type.Object({
@@ -59,16 +59,13 @@ export async function getEnableBankingTransactionsRoute(
 					.slice(0, 10);
 			const bankProvider =
 				opts.provider ??
-				(opts.sandbox
-					? new SandboxBankProvider(
-							'data/transations.json',
-							accountId,
-						)
-					: new EnableBankingAdapter(
-							new EnableBankingClient(),
-							accountId,
-							dateFrom,
-						));
+				new EnableBankingAdapter(
+					opts.sandbox
+						? new FileEnableBankingClient('data/transations.json', accountId)
+						: new EnableBankingClient(),
+					accountId,
+					dateFrom,
+				);
 			const transactions = await getBankTransactions(bankProvider);
 
 			return reply.send(transactions);

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { Type, type Static } from '@sinclair/typebox';
-import type { EnableBankingGateway } from '../../../ports/enablebanking-gateway.js';
+import type { EnableBankingSessionGateway } from '../../../ports/enablebanking-session-gateway.js';
 import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { deleteEnableBankingSession } from '../../../usecases/delete-enablebanking-session.js';
 
@@ -11,7 +11,7 @@ const Params = Type.Object({
 type Params = Static<typeof Params>;
 
 interface Options {
-	provider?: EnableBankingGateway;
+	provider?: EnableBankingSessionGateway;
 }
 
 export async function deleteEnableBankingSessionRoute(

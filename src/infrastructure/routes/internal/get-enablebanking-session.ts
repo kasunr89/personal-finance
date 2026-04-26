@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { Type, type Static } from '@sinclair/typebox';
-import type { EnableBankingGateway } from '../../../ports/enablebanking-gateway.js';
+import type { EnableBankingSessionGateway } from '../../../ports/enablebanking-session-gateway.js';
 import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { getEnableBankingSession } from '../../../usecases/get-enablebanking-session.js';
 
@@ -24,7 +24,7 @@ type Params = Static<typeof Params>;
 type Reply = Static<typeof Reply>;
 
 interface Options {
-	provider?: EnableBankingGateway;
+	provider?: EnableBankingSessionGateway;
 }
 
 export async function getEnableBankingSessionRoute(

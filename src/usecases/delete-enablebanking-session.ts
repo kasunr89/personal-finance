@@ -1,7 +1,7 @@
-import type { EnableBankingGateway } from '../ports/enablebanking-gateway.js';
+import type { EnableBankingSessionGateway } from '../ports/enablebanking-session-gateway.js';
 
 export async function deleteEnableBankingSession(
-	provider: EnableBankingGateway,
+	provider: EnableBankingSessionGateway,
 	sessionId: string,
 ): Promise<void> {
 	return provider.deleteSession(sessionId);

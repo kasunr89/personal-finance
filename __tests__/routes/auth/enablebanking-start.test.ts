@@ -2,19 +2,18 @@ import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import Fastify from 'fastify';
 import type { BankSession } from '../../../src/domain/types.js';
-import type { EnableBankingGateway } from '../../../src/ports/enablebanking-gateway.js';
+import type { EnableBankingSessionGateway } from '../../../src/ports/enablebanking-session-gateway.js';
 
 process.env.REDIRECT_HOST = 'https://example.com';
 
 function makeMockProvider(
-	overrides?: Partial<EnableBankingGateway>,
-): EnableBankingGateway {
+	overrides?: Partial<EnableBankingSessionGateway>,
+): EnableBankingSessionGateway {
 	return {
 		startAuth: mock.fn(async () => ({ url: 'https://bank.example/auth' })),
 		createSession: mock.fn(async () => ({}) as BankSession),
 		getSession: mock.fn(async () => ({}) as BankSession),
 		deleteSession: mock.fn(async () => {}),
-		getAllTransactions: mock.fn(async () => []),
 		...overrides,
 	};
 }
