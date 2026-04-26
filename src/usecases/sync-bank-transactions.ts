@@ -1,8 +1,8 @@
-import type { BankProvider } from '../ports/bank-provider.js';
+import type { BankGateway } from '../ports/bank-gateway.js';
 import type { TransactionRepo } from '../ports/transaction-repo.js';
 
 export async function syncTransactions(
-	provider: BankProvider,
+	provider: BankGateway,
 	repo: TransactionRepo,
 ): Promise<{ synced: number }> {
 	const transactions = await provider.getTransactions();

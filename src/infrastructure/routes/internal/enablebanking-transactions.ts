@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { Type, type Static } from '@sinclair/typebox';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { SandboxBankProvider } from '../../../adapters/banks/sandbox-provider.js';
-import type { BankProvider } from '../../../ports/bank-provider.js';
+import type { BankGateway } from '../../../ports/bank-gateway.js';
 import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { getBankTransactions } from '../../../usecases/get-bank-transactions.js';
 
@@ -33,7 +33,7 @@ type Reply = Static<typeof Reply>;
 
 interface Options {
 	sandbox?: boolean;
-	provider?: BankProvider;
+	provider?: BankGateway;
 }
 
 export async function enableBankingTransactionsRoute(

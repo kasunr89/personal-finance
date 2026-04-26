@@ -1,14 +1,14 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import Fastify from 'fastify';
-import type { BankProvider } from '../../../src/ports/bank-provider.js';
+import type { BankGateway } from '../../../src/ports/bank-gateway.js';
 import type { TransactionRepo } from '../../../src/ports/transaction-repo.js';
 
 process.env.SYNC_SECRET = 'test-secret';
 
 const AUTH = 'Bearer test-secret';
 
-const mockProvider: BankProvider = {
+const mockProvider: BankGateway = {
 	getTransactions: mock.fn(async () => []),
 };
 
@@ -79,7 +79,7 @@ describe('POST /sync-enablebanking', () => {
 	});
 
 	it('returns 503 on Enable Banking API error', async () => {
-		const failingProvider: BankProvider = {
+		const failingProvider: BankGateway = {
 			getTransactions: mock.fn(async () => {
 				throw new Error('Enable Banking API error: 503');
 			}),
@@ -105,7 +105,7 @@ describe('POST /sync-enablebanking', () => {
 	});
 
 	it('returns 500 on unexpected error', async () => {
-		const failingProvider: BankProvider = {
+		const failingProvider: BankGateway = {
 			getTransactions: mock.fn(async () => {
 				throw new Error('Unexpected failure');
 			}),

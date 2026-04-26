@@ -1,6 +1,6 @@
 import fs from 'fs';
 import type { Transaction } from '../../domain/types.js';
-import type { BankProvider } from '../../ports/bank-provider.js';
+import type { BankGateway } from '../../ports/bank-gateway.js';
 
 interface RawTransaction {
 	entry_reference: string;
@@ -10,7 +10,7 @@ interface RawTransaction {
 	remittance_information: string;
 }
 
-export class SandboxBankProvider implements BankProvider {
+export class SandboxBankProvider implements BankGateway {
 	constructor(
 		private readonly filePath: string,
 		private readonly accountId: string,

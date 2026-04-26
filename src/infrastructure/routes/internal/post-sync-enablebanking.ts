@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import type { BankProvider } from '../../../ports/bank-provider.js';
+import type { BankGateway } from '../../../ports/bank-gateway.js';
 import type { TransactionRepo } from '../../../ports/transaction-repo.js';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
@@ -7,7 +7,7 @@ import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { syncTransactions } from '../../../usecases/sync-bank-transactions.js';
 
 interface Options {
-	provider?: BankProvider;
+	provider?: BankGateway;
 	repo?: TransactionRepo;
 }
 

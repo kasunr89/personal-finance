@@ -1,7 +1,7 @@
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import Fastify from 'fastify';
-import type { BankProvider } from '../../../src/ports/bank-provider.js';
+import type { BankGateway } from '../../../src/ports/bank-gateway.js';
 import type { Transaction } from '../../../src/domain/types.js';
 
 const mockTx: Transaction = {
@@ -17,7 +17,7 @@ const mockTx: Transaction = {
 
 describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 	it('returns transactions for the given account', async () => {
-		const mockProvider: BankProvider = {
+		const mockProvider: BankGateway = {
 			getTransactions: mock.fn(async () => [mockTx]),
 		};
 
@@ -41,7 +41,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 	});
 
 	it('returns empty array when no transactions', async () => {
-		const mockProvider: BankProvider = {
+		const mockProvider: BankGateway = {
 			getTransactions: mock.fn(async () => []),
 		};
 
@@ -61,7 +61,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 	});
 
 	it('returns 500 when provider throws', async () => {
-		const mockProvider: BankProvider = {
+		const mockProvider: BankGateway = {
 			getTransactions: mock.fn(async () => {
 				throw new Error('bank error');
 			}),
