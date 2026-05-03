@@ -8,7 +8,7 @@ process.env.SYNC_SECRET = 'test-secret';
 
 const AUTH = 'Bearer test-secret';
 
-const mockProvider: BankGateway = {
+const mockBankGateway: BankGateway = {
 	getTransactions: mock.fn(async () => []),
 };
 
@@ -22,7 +22,7 @@ async function buildApp() {
 	const { postSyncEnableBankingRoute } =
 		await import('../../../src/infrastructure/routes/internal/post-sync-enablebanking.js');
 	app.register(postSyncEnableBankingRoute, {
-		provider: mockProvider,
+		bankGateway: mockBankGateway,
 		repo: mockRepo,
 	});
 	return app;
@@ -79,7 +79,7 @@ describe('POST /sync-enablebanking', () => {
 	});
 
 	it('returns 503 on Enable Banking API error', async () => {
-		const failingProvider: BankGateway = {
+		const failingBankGateway: BankGateway = {
 			getTransactions: mock.fn(async () => {
 				throw new Error('Enable Banking API error: 503');
 			}),
@@ -89,7 +89,7 @@ describe('POST /sync-enablebanking', () => {
 		const { postSyncEnableBankingRoute } =
 			await import('../../../src/infrastructure/routes/internal/post-sync-enablebanking.js');
 		app.register(postSyncEnableBankingRoute, {
-			provider: failingProvider,
+			bankGateway: failingBankGateway,
 			repo: mockRepo,
 		});
 
@@ -105,7 +105,7 @@ describe('POST /sync-enablebanking', () => {
 	});
 
 	it('returns 500 on unexpected error', async () => {
-		const failingProvider: BankGateway = {
+		const failingBankGateway: BankGateway = {
 			getTransactions: mock.fn(async () => {
 				throw new Error('Unexpected failure');
 			}),
@@ -115,7 +115,7 @@ describe('POST /sync-enablebanking', () => {
 		const { postSyncEnableBankingRoute } =
 			await import('../../../src/infrastructure/routes/internal/post-sync-enablebanking.js');
 		app.register(postSyncEnableBankingRoute, {
-			provider: failingProvider,
+			bankGateway: failingBankGateway,
 			repo: mockRepo,
 		});
 

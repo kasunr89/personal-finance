@@ -11,7 +11,7 @@ const mockSession: BankSession = {
 	validUntil: '2026-07-01',
 };
 
-function makeMockProvider(
+function makeSessionGateway(
 	overrides?: Partial<EnableBankingSessionGateway>,
 ): EnableBankingSessionGateway {
 	return {
@@ -29,7 +29,7 @@ describe('GET /callback', () => {
 		const { getEnableBankingCallbackRoute } =
 			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
 		app.register(getEnableBankingCallbackRoute, {
-			provider: makeMockProvider(),
+			sessionGateway: makeSessionGateway(),
 		});
 
 		const response = await app.inject({ method: 'GET', url: '/callback' });
@@ -40,12 +40,12 @@ describe('GET /callback', () => {
 	});
 
 	it('returns accounts when code is valid', async () => {
-		const provider = makeMockProvider();
+		const sessionGateway = makeSessionGateway();
 
 		const app = Fastify();
 		const { getEnableBankingCallbackRoute } =
 			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
-		app.register(getEnableBankingCallbackRoute, { provider });
+		app.register(getEnableBankingCallbackRoute, { sessionGateway });
 
 		const response = await app.inject({
 			method: 'GET',
@@ -58,7 +58,7 @@ describe('GET /callback', () => {
 	});
 
 	it('returns 500 when createSession throws', async () => {
-		const provider = makeMockProvider({
+		const sessionGateway = makeSessionGateway({
 			createSession: mock.fn(async () => {
 				throw new Error('session error');
 			}),
@@ -67,7 +67,7 @@ describe('GET /callback', () => {
 		const app = Fastify({ logger: false });
 		const { getEnableBankingCallbackRoute } =
 			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
-		app.register(getEnableBankingCallbackRoute, { provider });
+		app.register(getEnableBankingCallbackRoute, { sessionGateway });
 
 		const response = await app.inject({
 			method: 'GET',

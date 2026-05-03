@@ -7,7 +7,7 @@ import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { syncTransactions } from '../../../usecases/sync-bank-transactions.js';
 
 interface Options {
-	provider?: BankGateway;
+	bankGateway?: BankGateway;
 	repo?: TransactionRepo;
 }
 
@@ -30,14 +30,14 @@ export async function postSyncEnableBankingRoute(
 			dateFrom?: string;
 		};
 
-		if (!opts.provider && (!query.accountUid || !query.dateFrom)) {
+		if (!opts.bankGateway && (!query.accountUid || !query.dateFrom)) {
 			return reply.status(400).send({
 				error: 'accountUid and dateFrom query params required',
 			});
 		}
 
-		const provider =
-			opts.provider ??
+		const bankGateway =
+			opts.bankGateway ??
 			new EnableBankingAdapter(
 				new EnableBankingClient(),
 				query.accountUid!,
@@ -45,7 +45,7 @@ export async function postSyncEnableBankingRoute(
 			);
 
 		try {
-			const result = await syncTransactions(provider, repo, query.accountUid ?? '');
+			const result = await syncTransactions(bankGateway, repo, query.accountUid ?? '');
 			return reply.send(result);
 		} catch (err) {
 			if (

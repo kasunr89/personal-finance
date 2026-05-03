@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import type { BankSession, Transaction } from '../../domain/types.js';
 import type { EnableBankingSessionGateway } from '../../ports/enablebanking-session-gateway.js';
 import type { EnableBankingTransactionGateway } from '../../ports/enablebanking-transaction-gateway.js';
+import type { EnableBankingRawTransaction } from '../types/enablebanking-raw-transaction.js';
 
 const API_BASE = 'https://api.enablebanking.com';
 
@@ -28,19 +29,6 @@ interface EnableBankingSession {
 	closed: string | null;
 }
 
-interface EnableBankingTransaction {
-	entry_reference: string;
-	transaction_id: string | null;
-	booking_date: string;
-	status: string;
-	transaction_amount: { amount: string; currency: string };
-	remittance_information: string[];
-	credit_debit_indicator: string;
-	creditor: { name: string | null } | null;
-	creditor_account: { iban: string | null } | null;
-	debtor: { name: string | null } | null;
-	debtor_account: { iban: string | null } | null;
-}
 
 function toBankSession(raw: EnableBankingSession): BankSession {
 	return {
@@ -152,7 +140,7 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 		accountUid: string,
 		dateFrom: string,
 	): Promise<Transaction[]> {
-		const all: EnableBankingTransaction[] = [];
+		const all: EnableBankingRawTransaction[] = [];
 		let continuationKey: string | undefined;
 
 		do {
@@ -164,7 +152,7 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 				'GET',
 				`/accounts/${accountUid}/transactions?${params}`,
 			)) as {
-				transactions: EnableBankingTransaction[];
+				transactions: EnableBankingRawTransaction[];
 				continuation_key?: string;
 			};
 

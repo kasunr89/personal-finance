@@ -4,7 +4,7 @@ import Fastify from 'fastify';
 import type { BankSession } from '../../../src/domain/types.js';
 import type { EnableBankingSessionGateway } from '../../../src/ports/enablebanking-session-gateway.js';
 
-function makeMockProvider(
+function makeSessionGateway(
 	overrides?: Partial<EnableBankingSessionGateway>,
 ): EnableBankingSessionGateway {
 	return {
@@ -18,12 +18,12 @@ function makeMockProvider(
 
 describe('DELETE /enablebanking/sessions/:sessionId', () => {
 	it('returns 204 on successful deletion', async () => {
-		const provider = makeMockProvider();
+		const sessionGateway = makeSessionGateway();
 
 		const app = Fastify();
 		const { deleteEnableBankingSessionRoute } =
 			await import('../../../src/infrastructure/routes/internal/delete-enablebanking-session.js');
-		app.register(deleteEnableBankingSessionRoute, { provider });
+		app.register(deleteEnableBankingSessionRoute, { sessionGateway });
 
 		const response = await app.inject({
 			method: 'DELETE',
@@ -33,7 +33,7 @@ describe('DELETE /enablebanking/sessions/:sessionId', () => {
 	});
 
 	it('returns 500 when provider throws', async () => {
-		const provider = makeMockProvider({
+		const sessionGateway = makeSessionGateway({
 			deleteSession: mock.fn(async () => {
 				throw new Error('delete failed');
 			}),
@@ -42,7 +42,7 @@ describe('DELETE /enablebanking/sessions/:sessionId', () => {
 		const app = Fastify({ logger: false });
 		const { deleteEnableBankingSessionRoute } =
 			await import('../../../src/infrastructure/routes/internal/delete-enablebanking-session.js');
-		app.register(deleteEnableBankingSessionRoute, { provider });
+		app.register(deleteEnableBankingSessionRoute, { sessionGateway });
 
 		const response = await app.inject({
 			method: 'DELETE',

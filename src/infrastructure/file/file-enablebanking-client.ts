@@ -1,26 +1,13 @@
 import fs from 'fs';
 import type { Transaction } from '../../domain/types.js';
 import type { EnableBankingTransactionGateway } from '../../ports/enablebanking-transaction-gateway.js';
-
-interface RawTransaction {
-	entry_reference: string;
-	transaction_id: string | null;
-	booking_date: string;
-	status: string;
-	transaction_amount: { amount: string; currency: string };
-	remittance_information: string[];
-	credit_debit_indicator: 'CRDT' | 'DBIT';
-	creditor: { name: string | null } | null;
-	creditor_account: { iban: string | null } | null;
-	debtor: { name: string | null } | null;
-	debtor_account: { iban: string | null } | null;
-}
+import type { EnableBankingRawTransaction } from '../types/enablebanking-raw-transaction.js';
 
 export class FileEnableBankingClient implements EnableBankingTransactionGateway {
 	constructor(private readonly filePath: string) {}
 
 	async getAllTransactions(): Promise<Transaction[]> {
-		const raw: RawTransaction[] = JSON.parse(fs.readFileSync(this.filePath, 'utf-8'));
+		const raw: EnableBankingRawTransaction[] = JSON.parse(fs.readFileSync(this.filePath, 'utf-8'));
 
 		return raw.map((t) => ({
 			referenceId: t.entry_reference,

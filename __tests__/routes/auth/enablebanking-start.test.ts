@@ -6,7 +6,7 @@ import type { EnableBankingSessionGateway } from '../../../src/ports/enablebanki
 
 process.env.REDIRECT_HOST = 'https://example.com';
 
-function makeMockProvider(
+function makeSessionGateway(
 	overrides?: Partial<EnableBankingSessionGateway>,
 ): EnableBankingSessionGateway {
 	return {
@@ -20,12 +20,12 @@ function makeMockProvider(
 
 describe('GET /enablebanking/start', () => {
 	it('returns the bank authorization URL', async () => {
-		const provider = makeMockProvider();
+		const sessionGateway = makeSessionGateway();
 
 		const app = Fastify();
 		const { getEnableBankingStartRoute } =
 			await import('../../../src/infrastructure/routes/auth/get-enablebanking-start.js');
-		app.register(getEnableBankingStartRoute, { provider });
+		app.register(getEnableBankingStartRoute, { sessionGateway });
 
 		const response = await app.inject({
 			method: 'GET',
@@ -38,7 +38,7 @@ describe('GET /enablebanking/start', () => {
 	});
 
 	it('returns 500 when provider throws', async () => {
-		const provider = makeMockProvider({
+		const sessionGateway = makeSessionGateway({
 			startAuth: mock.fn(async () => {
 				throw new Error('auth failed');
 			}),
@@ -47,7 +47,7 @@ describe('GET /enablebanking/start', () => {
 		const app = Fastify({ logger: false });
 		const { getEnableBankingStartRoute } =
 			await import('../../../src/infrastructure/routes/auth/get-enablebanking-start.js');
-		app.register(getEnableBankingStartRoute, { provider });
+		app.register(getEnableBankingStartRoute, { sessionGateway });
 
 		const response = await app.inject({
 			method: 'GET',

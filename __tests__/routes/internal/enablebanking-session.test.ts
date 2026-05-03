@@ -11,7 +11,7 @@ const mockSession: BankSession = {
 	validUntil: '2026-07-01',
 };
 
-function makeMockProvider(
+function makeSessionGateway(
 	overrides?: Partial<EnableBankingSessionGateway>,
 ): EnableBankingSessionGateway {
 	return {
@@ -25,12 +25,12 @@ function makeMockProvider(
 
 describe('GET /enablebanking/sessions/:sessionId', () => {
 	it('returns session data for the given sessionId', async () => {
-		const provider = makeMockProvider();
+		const sessionGateway = makeSessionGateway();
 
 		const app = Fastify();
 		const { getEnableBankingSessionRoute } =
 			await import('../../../src/infrastructure/routes/internal/get-enablebanking-session.js');
-		app.register(getEnableBankingSessionRoute, { provider });
+		app.register(getEnableBankingSessionRoute, { sessionGateway });
 
 		const response = await app.inject({
 			method: 'GET',
@@ -45,7 +45,7 @@ describe('GET /enablebanking/sessions/:sessionId', () => {
 	});
 
 	it('returns 500 when provider throws', async () => {
-		const provider = makeMockProvider({
+		const sessionGateway = makeSessionGateway({
 			getSession: mock.fn(async () => {
 				throw new Error('upstream error');
 			}),
@@ -54,7 +54,7 @@ describe('GET /enablebanking/sessions/:sessionId', () => {
 		const app = Fastify({ logger: false });
 		const { getEnableBankingSessionRoute } =
 			await import('../../../src/infrastructure/routes/internal/get-enablebanking-session.js');
-		app.register(getEnableBankingSessionRoute, { provider });
+		app.register(getEnableBankingSessionRoute, { sessionGateway });
 
 		const response = await app.inject({
 			method: 'GET',

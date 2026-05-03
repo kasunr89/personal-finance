@@ -24,21 +24,21 @@ type Params = Static<typeof Params>;
 type Reply = Static<typeof Reply>;
 
 interface Options {
-	provider?: EnableBankingSessionGateway;
+	sessionGateway?: EnableBankingSessionGateway;
 }
 
 export async function getEnableBankingSessionRoute(
 	fastify: FastifyInstance,
 	opts: Options = {},
 ) {
-	const provider = opts.provider ?? new EnableBankingClient();
+	const sessionGateway = opts.sessionGateway ?? new EnableBankingClient();
 
 	fastify.get<{ Params: Params; Reply: Reply }>(
 		'/enablebanking/sessions/:sessionId',
 		{ schema: { params: Params, response: { 200: Reply } } },
 		async (request, reply) => {
 			const { sessionId } = request.params;
-			const session = await getEnableBankingSession(provider, sessionId);
+			const session = await getEnableBankingSession(sessionGateway, sessionId);
 			return reply.send(session);
 		},
 	);

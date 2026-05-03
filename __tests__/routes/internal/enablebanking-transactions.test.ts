@@ -18,7 +18,7 @@ const mockTx: Transaction = {
 
 describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 	it('returns transactions for the given account', async () => {
-		const mockProvider: BankGateway = {
+		const mockBankGateway: BankGateway = {
 			getTransactions: mock.fn(async () => [mockTx]),
 		};
 
@@ -26,7 +26,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 		const { getEnableBankingTransactionsRoute } =
 			await import('../../../src/infrastructure/routes/internal/get-enablebanking-transactions.js');
 		app.register(getEnableBankingTransactionsRoute, {
-			provider: mockProvider,
+			bankGateway: mockBankGateway,
 		});
 
 		const response = await app.inject({
@@ -42,7 +42,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 	});
 
 	it('returns empty array when no transactions', async () => {
-		const mockProvider: BankGateway = {
+		const mockBankGateway: BankGateway = {
 			getTransactions: mock.fn(async () => []),
 		};
 
@@ -50,7 +50,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 		const { getEnableBankingTransactionsRoute } =
 			await import('../../../src/infrastructure/routes/internal/get-enablebanking-transactions.js');
 		app.register(getEnableBankingTransactionsRoute, {
-			provider: mockProvider,
+			bankGateway: mockBankGateway,
 		});
 
 		const response = await app.inject({
@@ -62,7 +62,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 	});
 
 	it('returns 500 when provider throws', async () => {
-		const mockProvider: BankGateway = {
+		const mockBankGateway: BankGateway = {
 			getTransactions: mock.fn(async () => {
 				throw new Error('bank error');
 			}),
@@ -72,7 +72,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 		const { getEnableBankingTransactionsRoute } =
 			await import('../../../src/infrastructure/routes/internal/get-enablebanking-transactions.js');
 		app.register(getEnableBankingTransactionsRoute, {
-			provider: mockProvider,
+			bankGateway: mockBankGateway,
 		});
 
 		const response = await app.inject({

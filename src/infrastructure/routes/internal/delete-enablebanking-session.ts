@@ -11,21 +11,21 @@ const Params = Type.Object({
 type Params = Static<typeof Params>;
 
 interface Options {
-	provider?: EnableBankingSessionGateway;
+	sessionGateway?: EnableBankingSessionGateway;
 }
 
 export async function deleteEnableBankingSessionRoute(
 	fastify: FastifyInstance,
 	opts: Options = {},
 ) {
-	const provider = opts.provider ?? new EnableBankingClient();
+	const sessionGateway = opts.sessionGateway ?? new EnableBankingClient();
 
 	fastify.delete<{ Params: Params }>(
 		'/enablebanking/sessions/:sessionId',
 		{ schema: { params: Params } },
 		async (request, reply) => {
 			const { sessionId } = request.params;
-			await deleteEnableBankingSession(provider, sessionId);
+			await deleteEnableBankingSession(sessionGateway, sessionId);
 			return reply.status(204).send();
 		},
 	);

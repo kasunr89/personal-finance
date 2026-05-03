@@ -47,7 +47,7 @@ type Reply = Static<typeof Reply>;
 
 interface Options {
 	sandbox?: boolean;
-	provider?: BankGateway;
+	bankGateway?: BankGateway;
 }
 
 export async function getEnableBankingTransactionsRoute(
@@ -71,8 +71,8 @@ export async function getEnableBankingTransactionsRoute(
 				new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 					.toISOString()
 					.slice(0, 10);
-			const bankProvider =
-				opts.provider ??
+			const bankGateway =
+				opts.bankGateway ??
 				new EnableBankingAdapter(
 					opts.sandbox
 						? new FileEnableBankingClient('data/transations.json')
@@ -80,7 +80,7 @@ export async function getEnableBankingTransactionsRoute(
 					accountId,
 					dateFrom,
 				);
-			const transactions = await getBankTransactions(bankProvider);
+			const transactions = await getBankTransactions(bankGateway);
 
 			return reply.send(transactions);
 		},
