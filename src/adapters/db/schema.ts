@@ -1,9 +1,10 @@
 import type { Generated } from 'kysely';
 import type { StoredTransaction } from '../../domain/types.js';
 
-/** Kysely table definition for `transactions`. `id` is auto-generated. */
-export interface TransactionsTable extends Omit<StoredTransaction, 'id'> {
+/** Kysely table definition for `transactions`. `id` and `created_at` are auto-generated. */
+export interface TransactionsTable extends Omit<StoredTransaction, 'id' | 'created_at'> {
 	id: Generated<number>;
+	created_at: Generated<Date>;
 }
 
 export interface Database {

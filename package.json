@@ -8,7 +8,8 @@
     "teardown": "./scripts/teardown.sh",
     "dev": "npx tsx watch --env-file=.env src/infrastructure/server.ts",
     "test": "find __tests__ -name '*.ts' | sort | xargs npx tsx --test",
-    "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\"",
+    "migrate": "npx tsx --env-file=.env scripts/migrate.ts"
   },
   "keywords": [],
   "author": "",

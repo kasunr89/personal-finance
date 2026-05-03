@@ -6,24 +6,24 @@ import type { Database } from './schema.js';
 export class NeonTransactionRepo implements TransactionRepo {
 	constructor(private db: Kysely<Database>) {}
 
-	async upsert(accountId: string, transactions: Transaction[]): Promise<number> {
+	async upsert(transactions: Transaction[]): Promise<number> {
 		let count = 0;
 		for (const t of transactions) {
 			const result = await this.db
 				.insertInto('transactions')
 				.values({
-					account_id: accountId,
 					amount: t.amount.value as unknown as string,
 					currency: t.amount.currency,
 					description: t.description,
 					source: t.source,
-					source_id: t.referenceId,
-					created_at: t.date as unknown as Date,
+					source_reference_id: t.referenceId,
+					type: t.type,
+					date: t.date as unknown as Date,
+					creditor: t.creditor.name || t.creditor.iban ? `${t.creditor.name} ${t.creditor.iban}`.trim() : null,
+					debitor: t.debitor.name || t.debitor.iban ? `${t.debitor.name} ${t.debitor.iban}`.trim() : null,
 				})
 				.onConflict((oc) =>
-					oc
-						.columns(['account_id', 'source', 'source_id'])
-						.doNothing(),
+					oc.columns(['source', 'source_reference_id']).doNothing(),
 				)
 				.returning('id')
 				.executeTakeFirst();

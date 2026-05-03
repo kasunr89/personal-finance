@@ -7,18 +7,18 @@ export interface BankSession {
 
 /** A transaction row as returned from the database (snake_case, DB-native types). */
 export interface StoredTransaction {
-	/** Auto-incremented database primary key. */
 	id: number;
-	account_id: string;
 	/** Stored as a decimal string by the database (e.g. "12.39"). */
 	amount: string;
 	currency: string;
-	description: string;
-	/** ISO 4217 source bank identifier, e.g. 'LHV', 'enablebanking'. */
+	description: string | null;
 	source: string;
-	source_id: string;
-	/** The booking date stored as a JS Date by the Neon driver. */
+	source_reference_id: string;
+	type: string;
+	date: Date;
 	created_at: Date;
+	creditor: string | null;
+	debitor: string | null;
 }
 
 export interface Transaction {

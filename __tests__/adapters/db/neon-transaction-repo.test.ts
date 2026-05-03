@@ -63,7 +63,7 @@ describe('NeonTransactionRepo', () => {
 			await import('../../../src/adapters/db/neon-transaction-repo.js');
 		const repo = new NeonTransactionRepo(db);
 
-		const count = await repo.upsert('EE123', [tx1, tx2]);
+		const count = await repo.upsert([tx1, tx2]);
 
 		assert.equal(count, 2);
 		assert.equal(db._executeTakeFirst.mock.calls.length, 2);
@@ -75,7 +75,7 @@ describe('NeonTransactionRepo', () => {
 			await import('../../../src/adapters/db/neon-transaction-repo.js');
 		const repo = new NeonTransactionRepo(db);
 
-		const count = await repo.upsert('EE123', []);
+		const count = await repo.upsert([]);
 
 		assert.equal(count, 0);
 		assert.equal(db._executeTakeFirst.mock.calls.length, 0);
@@ -87,7 +87,7 @@ describe('NeonTransactionRepo', () => {
 			await import('../../../src/adapters/db/neon-transaction-repo.js');
 		const repo = new NeonTransactionRepo(db);
 
-		const count = await repo.upsert('EE123', [tx1]);
+		const count = await repo.upsert([tx1]);
 
 		assert.equal(count, 0);
 	});
@@ -96,13 +96,15 @@ describe('NeonTransactionRepo', () => {
 		const stored = [
 			{
 				id: 1,
-				account_id: 'EE123',
 				amount: '-15.5',
 				currency: 'EUR',
 				description: 'Coffee',
-				source: 'lhv',
-				source_id: 'lhv-tx-1',
-				created_at: new Date('2026-04-01'),
+				source: 'ENABLEBANKING',
+				source_reference_id: 'tx-1',
+				type: 'DEBIT',
+				date: new Date('2026-04-01'),
+				creditor: null,
+				debitor: null,
 			},
 		];
 		const db = createMockDb(undefined, stored);

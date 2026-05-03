@@ -4,9 +4,8 @@ import type { TransactionRepo } from '../ports/transaction-repo.js';
 export async function syncTransactions(
 	bankGateway: BankGateway,
 	repo: TransactionRepo,
-	accountId: string,
 ): Promise<{ synced: number }> {
 	const transactions = await bankGateway.getTransactions();
-	const synced = await repo.upsert(accountId, transactions);
+	const synced = await repo.upsert(transactions);
 	return { synced };
 }

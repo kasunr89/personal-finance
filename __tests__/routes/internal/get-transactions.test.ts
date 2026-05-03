@@ -6,13 +6,16 @@ import type { StoredTransaction } from '../../../src/domain/types.js';
 
 const storedTx: StoredTransaction = {
 	id: 1,
-	account_id: '19032424',
 	amount: '12.39',
 	currency: 'EUR',
 	description: 'Bolt',
 	source: 'enablebanking',
-	source_id: 'src-1',
+	source_reference_id: 'src-1',
+	type: 'DEBIT',
+	date: new Date('2026-04-17T21:00:00.000Z'),
 	created_at: new Date('2026-04-17T21:00:00.000Z'),
+	creditor: null,
+	debitor: null,
 };
 
 describe('GET /transactions', () => {

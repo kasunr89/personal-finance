@@ -27,11 +27,11 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 		};
 
-		const result = await syncTransactions(bankGateway, repo, 'EE123');
+		const result = await syncTransactions(bankGateway, repo);
 
 		assert.equal(result.synced, 1);
 		assert.equal((repo.upsert as any).mock.calls.length, 1);
-		assert.deepEqual((repo.upsert as any).mock.calls[0].arguments[1], [tx]);
+		assert.deepEqual((repo.upsert as any).mock.calls[0].arguments[0], [tx]);
 	});
 
 	it('returns zero when provider returns no transactions', async () => {
@@ -43,11 +43,11 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 		};
 
-		const result = await syncTransactions(bankGateway, repo, 'EE123');
+		const result = await syncTransactions(bankGateway, repo);
 
 		assert.equal(result.synced, 0);
 		assert.equal((repo.upsert as any).mock.calls.length, 1);
-		assert.deepEqual((repo.upsert as any).mock.calls[0].arguments[1], []);
+		assert.deepEqual((repo.upsert as any).mock.calls[0].arguments[0], []);
 	});
 
 	it('propagates provider errors', async () => {
@@ -61,7 +61,7 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 		};
 
-		await assert.rejects(() => syncTransactions(bankGateway, repo, 'EE123'), {
+		await assert.rejects(() => syncTransactions(bankGateway, repo), {
 			message: 'API down',
 		});
 	});
@@ -77,7 +77,7 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 		};
 
-		await assert.rejects(() => syncTransactions(bankGateway, repo, 'EE123'), {
+		await assert.rejects(() => syncTransactions(bankGateway, repo), {
 			message: 'DB down',
 		});
 	});
