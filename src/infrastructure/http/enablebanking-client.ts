@@ -140,7 +140,7 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 		accountUid: string,
 		dateFrom: string,
 	): Promise<Transaction[]> {
-		const all: EnableBankingRawTransaction[] = [];
+const all: EnableBankingRawTransaction[] = [];
 		let continuationKey: string | undefined;
 
 		do {

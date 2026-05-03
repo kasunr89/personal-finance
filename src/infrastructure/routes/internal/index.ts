@@ -17,5 +17,5 @@ export default function internalRoutes(
 	fastify.register(getEnableBankingTransactionsRoute, { sandbox: opts.sandbox });
 	fastify.register(deleteEnableBankingSessionRoute);
 	fastify.register(getTransactionsRoute);
-	fastify.register(postSyncEnableBankingRoute);
+	fastify.register(postSyncEnableBankingRoute, { sandbox: opts.sandbox });
 }

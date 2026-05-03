@@ -1,12 +1,22 @@
 import type { FastifyInstance } from 'fastify';
+import { Type, type Static } from '@sinclair/typebox';
 import type { BankGateway } from '../../../ports/bank-gateway.js';
 import type { TransactionRepo } from '../../../ports/transaction-repo.js';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
 import { EnableBankingClient } from '../../http/enablebanking-client.js';
+import { FileEnableBankingClient } from '../../file/file-enablebanking-client.js';
 import { syncTransactions } from '../../../usecases/sync-bank-transactions.js';
 
+const Body = Type.Object({
+	account_id: Type.String({ minLength: 1 }),
+	date_from: Type.String({ minLength: 1 }),
+});
+
+type Body = Static<typeof Body>;
+
 interface Options {
+	sandbox?: boolean;
 	bankGateway?: BankGateway;
 	repo?: TransactionRepo;
 }
@@ -19,44 +29,41 @@ export async function postSyncEnableBankingRoute(
 
 	const secret = process.env.SYNC_SECRET;
 
-	fastify.post('/sync-enablebanking', async (request, reply) => {
-		const auth = request.headers.authorization;
-		if (!secret || auth !== `Bearer ${secret}`) {
-			return reply.status(401).send({ error: 'Unauthorized' });
-		}
-
-		const query = request.query as {
-			accountUid?: string;
-			dateFrom?: string;
-		};
-
-		if (!opts.bankGateway && (!query.accountUid || !query.dateFrom)) {
-			return reply.status(400).send({
-				error: 'accountUid and dateFrom query params required',
-			});
-		}
-
-		const bankGateway =
-			opts.bankGateway ??
-			new EnableBankingAdapter(
-				new EnableBankingClient(),
-				query.accountUid!,
-				query.dateFrom!,
-			);
-
-		try {
-			const result = await syncTransactions(bankGateway, repo);
-			return reply.send(result);
-		} catch (err) {
-			if (
-				err instanceof Error &&
-				err.message.startsWith('Enable Banking API error')
-			) {
-				return reply
-					.status(503)
-					.send({ error: 'Enable Banking API unavailable' });
+	fastify.post<{ Body: Body }>(
+		'/sync-enablebanking',
+		{ schema: { body: Body } },
+		async (request, reply) => {
+			const auth = request.headers.authorization;
+			if (!secret || auth !== `Bearer ${secret}`) {
+				return reply.status(401).send({ error: 'Unauthorized' });
 			}
-			return reply.status(500).send({ error: 'Sync error' });
-		}
-	});
+
+			const { account_id, date_from } = request.body;
+
+			const bankGateway =
+				opts.bankGateway ??
+				new EnableBankingAdapter(
+					opts.sandbox
+						? new FileEnableBankingClient('data/transations.json')
+						: new EnableBankingClient(),
+					account_id,
+					date_from,
+				);
+
+			try {
+				const result = await syncTransactions(bankGateway, repo);
+				return reply.send(result);
+			} catch (err) {
+				if (
+					err instanceof Error &&
+					err.message.startsWith('Enable Banking API error')
+				) {
+					return reply
+						.status(503)
+						.send({ error: 'Enable Banking API unavailable' });
+				}
+				return reply.status(500).send({ error: 'Sync error' });
+			}
+		},
+	);
 }
