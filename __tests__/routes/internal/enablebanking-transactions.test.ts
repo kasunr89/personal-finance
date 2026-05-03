@@ -5,14 +5,15 @@ import type { BankGateway } from '../../../src/ports/bank-gateway.js';
 import type { Transaction } from '../../../src/domain/types.js';
 
 const mockTx: Transaction = {
-	id: 'tx-1',
-	accountId: 'acc-1',
-	amount: -12.5,
-	currency: 'EUR',
+	referenceId: 'tx-1',
+	amount: { value: -12.5, currency: 'EUR' },
+	source: 'ENABLEBANKING',
+	creditor: { name: '', iban: '' },
+	debitor: { name: '', iban: '' },
+	type: 'DEBIT',
+	status: 'BOOKED',
+	date: '2026-04-22',
 	description: 'Coffee',
-	bookingDate: '2026-04-22',
-	source: 'enablebanking',
-	sourceId: 'src-1',
 };
 
 describe('GET /enablebanking/accounts/:accountId/transactions', () => {
@@ -35,9 +36,9 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 		assert.equal(response.statusCode, 200);
 		const body = JSON.parse(response.body);
 		assert.equal(body.length, 1);
-		assert.equal(body[0].id, 'tx-1');
-		assert.equal(body[0].amount, -12.5);
-		assert.equal(body[0].currency, 'EUR');
+		assert.equal(body[0].referenceId, 'tx-1');
+		assert.equal(body[0].amount.value, -12.5);
+		assert.equal(body[0].amount.currency, 'EUR');
 	});
 
 	it('returns empty array when no transactions', async () => {

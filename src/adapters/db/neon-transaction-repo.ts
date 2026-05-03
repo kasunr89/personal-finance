@@ -6,19 +6,19 @@ import type { Database } from './schema.js';
 export class NeonTransactionRepo implements TransactionRepo {
 	constructor(private db: Kysely<Database>) {}
 
-	async upsert(transactions: Transaction[]): Promise<number> {
+	async upsert(accountId: string, transactions: Transaction[]): Promise<number> {
 		let count = 0;
 		for (const t of transactions) {
 			const result = await this.db
 				.insertInto('transactions')
 				.values({
-					account_id: t.accountId,
-					amount: t.amount as unknown as string,
-					currency: t.currency,
+					account_id: accountId,
+					amount: t.amount.value as unknown as string,
+					currency: t.amount.currency,
 					description: t.description,
 					source: t.source,
-					source_id: t.sourceId,
-					created_at: t.bookingDate as unknown as Date,
+					source_id: t.referenceId,
+					created_at: t.date as unknown as Date,
 				})
 				.onConflict((oc) =>
 					oc

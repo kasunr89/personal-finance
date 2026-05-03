@@ -15,14 +15,28 @@ const Query = Type.Object({
 });
 
 const TransactionReply = Type.Object({
-	id: Type.String(),
-	accountId: Type.String(),
-	amount: Type.Number(),
-	currency: Type.String(),
-	description: Type.Union([Type.String(), Type.Null()]),
-	bookingDate: Type.String(),
-	source: Type.String(),
-	sourceId: Type.String(),
+	referenceId: Type.String(),
+	amount: Type.Object({
+		value: Type.Number(),
+		currency: Type.String(),
+	}),
+	source: Type.Union([
+		Type.Literal('SANDBOX'),
+		Type.Literal('ENABLEBANKING'),
+		Type.Literal('WISE'),
+	]),
+	creditor: Type.Object({
+		name: Type.String(),
+		iban: Type.String(),
+	}),
+	debitor: Type.Object({
+		name: Type.String(),
+		iban: Type.String(),
+	}),
+	type: Type.Union([Type.Literal('CREDIT'), Type.Literal('DEBIT')]),
+	status: Type.String(),
+	date: Type.String(),
+	description: Type.String(),
 });
 
 const Reply = Type.Array(TransactionReply);
@@ -61,7 +75,7 @@ export async function getEnableBankingTransactionsRoute(
 				opts.provider ??
 				new EnableBankingAdapter(
 					opts.sandbox
-						? new FileEnableBankingClient('data/transations.json', accountId)
+						? new FileEnableBankingClient('data/transations.json')
 						: new EnableBankingClient(),
 					accountId,
 					dateFrom,

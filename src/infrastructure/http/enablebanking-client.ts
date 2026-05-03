@@ -32,13 +32,14 @@ interface EnableBankingTransaction {
 	entry_reference: string;
 	transaction_id: string | null;
 	booking_date: string;
+	status: string;
 	transaction_amount: { amount: string; currency: string };
-	remittance_information_unstructured: string;
 	remittance_information: string[];
 	credit_debit_indicator: string;
 	creditor: { name: string | null } | null;
+	creditor_account: { iban: string | null } | null;
 	debtor: { name: string | null } | null;
-	[key: string]: unknown;
+	debtor_account: { iban: string | null } | null;
 }
 
 function toBankSession(raw: EnableBankingSession): BankSession {
@@ -173,14 +174,24 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 
 		return all.map(
 			(t): Transaction => ({
-				id: '',
-				accountId: accountUid,
-				amount: parseFloat(t.transaction_amount.amount),
-				currency: t.transaction_amount.currency,
-				description: t.remittance_information[0] ?? null,
-				bookingDate: t.booking_date,
-				source: 'enablebanking',
-				sourceId: t.transaction_id ?? t.entry_reference,
+				referenceId: t.entry_reference,
+				amount: {
+					value: parseFloat(t.transaction_amount.amount),
+					currency: t.transaction_amount.currency,
+				},
+				source: 'ENABLEBANKING',
+				creditor: {
+					name: t.creditor?.name ?? '',
+					iban: t.creditor_account?.iban ?? '',
+				},
+				debitor: {
+					name: t.debtor?.name ?? '',
+					iban: t.debtor_account?.iban ?? '',
+				},
+				type: t.credit_debit_indicator === 'DBIT' ? 'DEBIT' : 'CREDIT',
+				status: t.status,
+				date: t.booking_date,
+				description: t.remittance_information[0] ?? '',
 			}),
 		);
 	}

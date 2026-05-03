@@ -45,7 +45,7 @@ export async function postSyncEnableBankingRoute(
 			);
 
 		try {
-			const result = await syncTransactions(provider, repo);
+			const result = await syncTransactions(provider, repo, query.accountUid ?? '');
 			return reply.send(result);
 		} catch (err) {
 			if (

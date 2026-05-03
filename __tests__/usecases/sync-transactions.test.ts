@@ -6,14 +6,15 @@ import type { TransactionRepo } from '../../src/ports/transaction-repo.js';
 import type { Transaction } from '../../src/domain/types.js';
 
 const tx: Transaction = {
-	id: 'tx-1',
-	accountId: 'EE123',
-	amount: -15.5,
-	currency: 'EUR',
+	referenceId: 'tx-1',
+	amount: { value: -15.5, currency: 'EUR' },
+	source: 'ENABLEBANKING',
+	creditor: { name: '', iban: '' },
+	debitor: { name: '', iban: '' },
+	type: 'DEBIT',
+	status: 'BOOKED',
+	date: '2026-04-01',
 	description: 'Coffee',
-	bookingDate: '2026-04-01',
-	source: 'lhv',
-	sourceId: 'tx-1',
 };
 
 describe('syncTransactions', () => {
@@ -26,11 +27,11 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 		};
 
-		const result = await syncTransactions(provider, repo);
+		const result = await syncTransactions(provider, repo, 'EE123');
 
 		assert.equal(result.synced, 1);
 		assert.equal((repo.upsert as any).mock.calls.length, 1);
-		assert.deepEqual((repo.upsert as any).mock.calls[0].arguments[0], [tx]);
+		assert.deepEqual((repo.upsert as any).mock.calls[0].arguments[1], [tx]);
 	});
 
 	it('returns zero when provider returns no transactions', async () => {
@@ -42,11 +43,11 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 		};
 
-		const result = await syncTransactions(provider, repo);
+		const result = await syncTransactions(provider, repo, 'EE123');
 
 		assert.equal(result.synced, 0);
 		assert.equal((repo.upsert as any).mock.calls.length, 1);
-		assert.deepEqual((repo.upsert as any).mock.calls[0].arguments[0], []);
+		assert.deepEqual((repo.upsert as any).mock.calls[0].arguments[1], []);
 	});
 
 	it('propagates provider errors', async () => {
@@ -60,7 +61,7 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 		};
 
-		await assert.rejects(() => syncTransactions(provider, repo), {
+		await assert.rejects(() => syncTransactions(provider, repo, 'EE123'), {
 			message: 'API down',
 		});
 	});
@@ -76,7 +77,7 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 		};
 
-		await assert.rejects(() => syncTransactions(provider, repo), {
+		await assert.rejects(() => syncTransactions(provider, repo, 'EE123'), {
 			message: 'DB down',
 		});
 	});

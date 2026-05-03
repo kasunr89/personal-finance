@@ -5,25 +5,27 @@ import type { Kysely } from 'kysely';
 import type { Database } from '../../../src/adapters/db/schema.js';
 
 const tx1: Transaction = {
-	id: 'tx-1',
-	accountId: 'EE123',
-	amount: -15.5,
-	currency: 'EUR',
+	referenceId: 'tx-1',
+	amount: { value: -15.5, currency: 'EUR' },
+	source: 'ENABLEBANKING',
+	creditor: { name: '', iban: '' },
+	debitor: { name: '', iban: '' },
+	type: 'DEBIT',
+	status: 'BOOKED',
+	date: '2026-04-01',
 	description: 'Coffee',
-	bookingDate: '2026-04-01',
-	source: 'lhv',
-	sourceId: 'lhv-tx-1',
 };
 
 const tx2: Transaction = {
-	id: 'tx-2',
-	accountId: 'EE123',
-	amount: -8.0,
-	currency: 'EUR',
+	referenceId: 'tx-2',
+	amount: { value: -8.0, currency: 'EUR' },
+	source: 'ENABLEBANKING',
+	creditor: { name: '', iban: '' },
+	debitor: { name: '', iban: '' },
+	type: 'DEBIT',
+	status: 'BOOKED',
+	date: '2026-04-02',
 	description: 'Bus',
-	bookingDate: '2026-04-02',
-	source: 'lhv',
-	sourceId: 'lhv-tx-2',
 };
 
 function createMockDb(
@@ -61,7 +63,7 @@ describe('NeonTransactionRepo', () => {
 			await import('../../../src/adapters/db/neon-transaction-repo.js');
 		const repo = new NeonTransactionRepo(db);
 
-		const count = await repo.upsert([tx1, tx2]);
+		const count = await repo.upsert('EE123', [tx1, tx2]);
 
 		assert.equal(count, 2);
 		assert.equal(db._executeTakeFirst.mock.calls.length, 2);
@@ -73,7 +75,7 @@ describe('NeonTransactionRepo', () => {
 			await import('../../../src/adapters/db/neon-transaction-repo.js');
 		const repo = new NeonTransactionRepo(db);
 
-		const count = await repo.upsert([]);
+		const count = await repo.upsert('EE123', []);
 
 		assert.equal(count, 0);
 		assert.equal(db._executeTakeFirst.mock.calls.length, 0);
@@ -85,7 +87,7 @@ describe('NeonTransactionRepo', () => {
 			await import('../../../src/adapters/db/neon-transaction-repo.js');
 		const repo = new NeonTransactionRepo(db);
 
-		const count = await repo.upsert([tx1]);
+		const count = await repo.upsert('EE123', [tx1]);
 
 		assert.equal(count, 0);
 	});
