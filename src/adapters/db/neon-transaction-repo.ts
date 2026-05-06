@@ -19,8 +19,8 @@ export class NeonTransactionRepo implements TransactionRepo {
 					source_reference_id: t.referenceId,
 					type: t.type,
 					date: t.date as unknown as Date,
-					creditor: t.creditor.name || t.creditor.iban ? `${t.creditor.name} ${t.creditor.iban}`.trim() : null,
-					debitor: t.debitor.name || t.debitor.iban ? `${t.debitor.name} ${t.debitor.iban}`.trim() : null,
+					creditor: t.creditor.name || null,
+					debitor: t.debitor.name || null,
 				})
 				.onConflict((oc) =>
 					oc.columns(['source', 'source_reference_id']).doNothing(),

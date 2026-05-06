@@ -21,9 +21,9 @@ const TransactionReply = Type.Object({
 		currency: Type.String(),
 	}),
 	source: Type.Union([
-		Type.Literal('SANDBOX'),
-		Type.Literal('ENABLEBANKING'),
-		Type.Literal('WISE'),
+		Type.Literal('lhv-sandbox'),
+		Type.Literal('lhv'),
+		Type.Literal('wise'),
 	]),
 	creditor: Type.Object({
 		name: Type.String(),
@@ -33,7 +33,7 @@ const TransactionReply = Type.Object({
 		name: Type.String(),
 		iban: Type.String(),
 	}),
-	type: Type.Union([Type.Literal('CREDIT'), Type.Literal('DEBIT')]),
+	type: Type.Union([Type.Literal('credit'), Type.Literal('debit')]),
 	status: Type.String(),
 	date: Type.String(),
 	description: Type.String(),
@@ -75,7 +75,7 @@ export async function getEnableBankingTransactionsRoute(
 				opts.bankGateway ??
 				new EnableBankingAdapter(
 					opts.sandbox
-						? new FileEnableBankingClient('data/transations.json')
+						? new FileEnableBankingClient('data/transactions-2026-04-01.json')
 						: new EnableBankingClient(),
 					accountId,
 					dateFrom,

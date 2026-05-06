@@ -11,7 +11,7 @@ const storedTx: StoredTransaction = {
 	description: 'Bolt',
 	source: 'enablebanking',
 	source_reference_id: 'src-1',
-	type: 'DEBIT',
+	type: 'debit',
 	date: new Date('2026-04-17T21:00:00.000Z'),
 	created_at: new Date('2026-04-17T21:00:00.000Z'),
 	creditor: null,

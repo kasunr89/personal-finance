@@ -4,6 +4,7 @@ import type { BankSession, Transaction } from '../../domain/types.js';
 import type { EnableBankingSessionGateway } from '../../ports/enablebanking-session-gateway.js';
 import type { EnableBankingTransactionGateway } from '../../ports/enablebanking-transaction-gateway.js';
 import type { EnableBankingRawTransaction } from '../types/enablebanking-raw-transaction.js';
+import { mapRawTransaction } from '../mappers/enablebanking-transaction.js';
 
 const API_BASE = 'https://api.enablebanking.com';
 
@@ -160,27 +161,8 @@ const all: EnableBankingRawTransaction[] = [];
 			continuationKey = res.continuation_key;
 		} while (continuationKey);
 
-		return all.map(
-			(t): Transaction => ({
-				referenceId: t.entry_reference,
-				amount: {
-					value: parseFloat(t.transaction_amount.amount),
-					currency: t.transaction_amount.currency,
-				},
-				source: 'ENABLEBANKING',
-				creditor: {
-					name: t.creditor?.name ?? '',
-					iban: t.creditor_account?.iban ?? '',
-				},
-				debitor: {
-					name: t.debtor?.name ?? '',
-					iban: t.debtor_account?.iban ?? '',
-				},
-				type: t.credit_debit_indicator === 'DBIT' ? 'DEBIT' : 'CREDIT',
-				status: t.status,
-				date: t.booking_date,
-				description: t.remittance_information[0] ?? '',
-			}),
-		);
+		return all
+			.filter((t) => ['BOOK', 'OTHR'].includes(t.status))
+			.map((t) => mapRawTransaction(t, 'lhv'));
 	}
 }

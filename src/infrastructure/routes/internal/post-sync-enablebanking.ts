@@ -44,7 +44,7 @@ export async function postSyncEnableBankingRoute(
 				opts.bankGateway ??
 				new EnableBankingAdapter(
 					opts.sandbox
-						? new FileEnableBankingClient('data/transations.json')
+						? new FileEnableBankingClient('data/transactions-2026-04-01.json')
 						: new EnableBankingClient(),
 					account_id,
 					date_from,

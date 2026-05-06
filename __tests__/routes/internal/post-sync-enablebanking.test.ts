@@ -7,6 +7,7 @@ import type { TransactionRepo } from '../../../src/ports/transaction-repo.js';
 process.env.SYNC_SECRET = 'test-secret';
 
 const AUTH = 'Bearer test-secret';
+const BODY = { account_id: 'EE123', date_from: '2026-04-01' };
 
 const mockBankGateway: BankGateway = {
 	getTransactions: mock.fn(async () => []),
@@ -34,6 +35,7 @@ describe('POST /sync-enablebanking', () => {
 		const response = await app.inject({
 			method: 'POST',
 			url: '/sync-enablebanking',
+			payload: BODY,
 		});
 		assert.equal(response.statusCode, 401);
 		assert.deepEqual(JSON.parse(response.body), { error: 'Unauthorized' });
@@ -45,6 +47,7 @@ describe('POST /sync-enablebanking', () => {
 			method: 'POST',
 			url: '/sync-enablebanking',
 			headers: { authorization: 'Bearer wrong-secret' },
+			payload: BODY,
 		});
 		assert.equal(response.statusCode, 401);
 		assert.deepEqual(JSON.parse(response.body), { error: 'Unauthorized' });
@@ -56,26 +59,20 @@ describe('POST /sync-enablebanking', () => {
 			method: 'POST',
 			url: '/sync-enablebanking',
 			headers: { authorization: AUTH },
+			payload: BODY,
 		});
 		assert.equal(response.statusCode, 200);
 		assert.deepEqual(JSON.parse(response.body), { synced: 3 });
 	});
 
-	it('returns 400 when accountUid or dateFrom missing and no injected provider', async () => {
-		const app = Fastify({ logger: false });
-		const { postSyncEnableBankingRoute } =
-			await import('../../../src/infrastructure/routes/internal/post-sync-enablebanking.js');
-		app.register(postSyncEnableBankingRoute, { repo: mockRepo });
-
+	it('returns 400 when body is missing', async () => {
+		const app = await buildApp();
 		const response = await app.inject({
 			method: 'POST',
 			url: '/sync-enablebanking',
 			headers: { authorization: AUTH },
 		});
 		assert.equal(response.statusCode, 400);
-		assert.deepEqual(JSON.parse(response.body), {
-			error: 'accountUid and dateFrom query params required',
-		});
 	});
 
 	it('returns 503 on Enable Banking API error', async () => {
@@ -97,6 +94,7 @@ describe('POST /sync-enablebanking', () => {
 			method: 'POST',
 			url: '/sync-enablebanking',
 			headers: { authorization: AUTH },
+			payload: BODY,
 		});
 		assert.equal(response.statusCode, 503);
 		assert.deepEqual(JSON.parse(response.body), {
@@ -123,6 +121,7 @@ describe('POST /sync-enablebanking', () => {
 			method: 'POST',
 			url: '/sync-enablebanking',
 			headers: { authorization: AUTH },
+			payload: BODY,
 		});
 		assert.equal(response.statusCode, 500);
 		assert.deepEqual(JSON.parse(response.body), { error: 'Sync error' });

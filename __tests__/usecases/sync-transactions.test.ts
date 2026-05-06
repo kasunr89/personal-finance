@@ -8,10 +8,10 @@ import type { Transaction } from '../../src/domain/types.js';
 const tx: Transaction = {
 	referenceId: 'tx-1',
 	amount: { value: -15.5, currency: 'EUR' },
-	source: 'ENABLEBANKING',
+	source: 'lhv',
 	creditor: { name: '', iban: '' },
 	debitor: { name: '', iban: '' },
-	type: 'DEBIT',
+	type: 'debit',
 	status: 'BOOKED',
 	date: '2026-04-01',
 	description: 'Coffee',

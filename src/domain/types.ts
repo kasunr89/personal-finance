@@ -35,8 +35,8 @@ export interface Transaction {
 		name: string;
 		iban: string;
 	};
-	source: 'SANDBOX' | 'ENABLEBANKING' | 'WISE'; 
-	type: 'CREDIT' | 'DEBIT';
+	source: 'lhv' | 'wise' | 'lhv-sandbox'; 
+	type: 'credit' | 'debit';
 	status: string;
 	date: string;
 	description: string;
