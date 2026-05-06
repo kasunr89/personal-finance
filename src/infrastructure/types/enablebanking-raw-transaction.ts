@@ -6,8 +6,8 @@ export interface EnableBankingRawTransaction {
 	transaction_amount: { amount: string; currency: string };
 	remittance_information: string[];
 	credit_debit_indicator: 'CRDT' | 'DBIT';
-	creditor: { name: string | null } | null;
-	creditor_account: { iban: string | null } | null;
-	debtor: { name: string | null } | null;
-	debtor_account: { iban: string | null } | null;
+	creditor: { name: string | null };
+	creditor_account: { iban: string } | null;
+	debtor: { name: string | null };
+	debtor_account: { iban: string } | null;
 }

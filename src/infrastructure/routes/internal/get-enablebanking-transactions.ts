@@ -26,12 +26,12 @@ const TransactionReply = Type.Object({
 		Type.Literal('wise'),
 	]),
 	creditor: Type.Object({
-		name: Type.String(),
-		iban: Type.String(),
+		name: Type.Union([Type.String(), Type.Null()]),
+		iban: Type.Union([Type.String(), Type.Null()]),
 	}),
 	debitor: Type.Object({
-		name: Type.String(),
-		iban: Type.String(),
+		name: Type.Union([Type.String(), Type.Null()]),
+		iban: Type.Union([Type.String(), Type.Null()]),
 	}),
 	type: Type.Union([Type.Literal('credit'), Type.Literal('debit')]),
 	status: Type.String(),

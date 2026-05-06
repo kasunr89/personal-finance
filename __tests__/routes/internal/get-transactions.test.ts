@@ -15,7 +15,9 @@ const storedTx: StoredTransaction = {
 	date: new Date('2026-04-17T21:00:00.000Z'),
 	created_at: new Date('2026-04-17T21:00:00.000Z'),
 	creditor: null,
+	creditor_iban: null,
 	debitor: null,
+	debitor_iban: null,
 };
 
 describe('GET /transactions', () => {

@@ -18,7 +18,9 @@ export interface StoredTransaction {
 	date: Date;
 	created_at: Date;
 	creditor: string | null;
+	creditor_iban: string | null;
 	debitor: string | null;
+	debitor_iban: string | null;
 }
 
 export interface Transaction {
@@ -28,12 +30,12 @@ export interface Transaction {
 		currency: string;
 	};
 	creditor: {
-		name: string;
-		iban: string;
+		name: string | null;
+		iban: string | null;
 	};
 	debitor: {
-		name: string;
-		iban: string;
+		name: string | null;
+		iban: string | null;
 	};
 	source: 'lhv' | 'wise' | 'lhv-sandbox'; 
 	type: 'credit' | 'debit';
