@@ -1,5 +1,5 @@
-import Anthropic from '@anthropic-ai/sdk';
-import type { CategoryClient } from '../../ports/category-client.js';
+import OpenAI from 'openai';
+import type { TransactionCategoryGateway } from '../../ports/transaction-category-gateway.js';
 import type { UncategorizedTransaction, CategoryResult } from '../../domain/types.js';
 
 const SYSTEM_PROMPT = `You are a personal finance categorization assistant.
@@ -21,30 +21,26 @@ Classify each transaction into one of these categories and subcategories:
 Return ONLY a valid JSON array with no extra text, markdown, or explanation:
 [{ "id": <number>, "category": "<main category>", "sub_category": "<subcategory>" }]`;
 
-export class AnthropicCategoryClient implements CategoryClient {
-	private client: Anthropic;
+export class OpenAiClient implements TransactionCategoryGateway {
+	private client: OpenAI;
 
 	constructor(apiKey?: string) {
-		this.client = new Anthropic({
-			apiKey: apiKey ?? process.env.ANTHROPIC_API_KEY,
+		this.client = new OpenAI({
+			apiKey: apiKey ?? process.env.OPENAI_API_KEY,
 		});
 	}
 
 	async categorize(transactions: UncategorizedTransaction[]): Promise<CategoryResult[]> {
-		const message = await this.client.messages.create({
-			model: 'claude-haiku-4-5-20251001',
-			max_tokens: 4096,
-			system: SYSTEM_PROMPT,
+		const response = await this.client.chat.completions.create({
+			model: 'gpt-4o-mini',
 			messages: [
-				{
-					role: 'user',
-					content: JSON.stringify(transactions),
-				},
+				{ role: 'system', content: SYSTEM_PROMPT },
+				{ role: 'user', content: JSON.stringify(transactions) },
 			],
 		});
 
-		const block = message.content[0];
-		if (block.type !== 'text') return [];
-		return JSON.parse(block.text) as CategoryResult[];
+		const text = response.choices[0]?.message?.content;
+		if (!text) return [];
+		return JSON.parse(text) as CategoryResult[];
 	}
 }

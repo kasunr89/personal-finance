@@ -5,7 +5,7 @@ import type { TransactionRepo } from '../../../ports/transaction-repo.js';
 import type { TransactionCategoryGateway } from '../../../ports/transaction-category-gateway.js';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
-import { AnthropicCategoryClient } from '../../ai/anthropic-client.js';
+import { OpenAiClient } from '../../ai/openai-client.js';
 import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { FileEnableBankingClient } from '../../file/file-enablebanking-client.js';
 import { syncTransactions } from '../../../usecases/sync-bank-transactions.js';
@@ -31,7 +31,7 @@ export async function postSyncEnableBankingRoute(
 	opts: Options = {},
 ) {
 	const repo = opts.repo ?? new NeonTransactionRepo(fastify.db);
-	const categoryClient = opts.categoryClient ?? new AnthropicCategoryClient();
+	const categoryClient = opts.categoryClient ?? new OpenAiClient();
 	const secret = process.env.SYNC_SECRET;
 
 	const listener = () => {
