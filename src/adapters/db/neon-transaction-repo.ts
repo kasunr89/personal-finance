@@ -1,5 +1,5 @@
 import type { Kysely } from 'kysely';
-import type { StoredTransaction, Transaction } from '../../domain/types.js';
+import type { StoredTransaction, Transaction, UncategorizedTransaction, CategoryResult } from '../../domain/types.js';
 import type { TransactionRepo } from '../../ports/transaction-repo.js';
 import type { Database } from './schema.js';
 
@@ -36,5 +36,23 @@ export class NeonTransactionRepo implements TransactionRepo {
 
 	async getTransactions(): Promise<StoredTransaction[]> {
 		return this.db.selectFrom('transactions').selectAll().execute();
+	}
+
+	async getUncategorized(): Promise<UncategorizedTransaction[]> {
+		return this.db
+			.selectFrom('transactions')
+			.select(['id', 'description', 'type'])
+			.where('category', 'is', null)
+			.execute();
+	}
+
+	async updateCategories(results: CategoryResult[]): Promise<void> {
+		for (const { id, category, sub_category } of results) {
+			await this.db
+				.updateTable('transactions')
+				.set({ category, sub_category })
+				.where('id', '=', id)
+				.execute();
+		}
 	}
 }

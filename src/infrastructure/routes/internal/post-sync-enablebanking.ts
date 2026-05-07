@@ -2,11 +2,15 @@ import type { FastifyInstance } from 'fastify';
 import { Type, type Static } from '@sinclair/typebox';
 import type { BankGateway } from '../../../ports/bank-gateway.js';
 import type { TransactionRepo } from '../../../ports/transaction-repo.js';
+import type { CategoryClient } from '../../../ports/category-client.js';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
+import { AnthropicCategoryClient } from '../../ai/anthropic-client.js';
 import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { FileEnableBankingClient } from '../../file/file-enablebanking-client.js';
 import { syncTransactions } from '../../../usecases/sync-bank-transactions.js';
+import { categorizeTransactions } from '../../../usecases/categorize-transactions.js';
+import { transactionEvents, TRANSACTIONS_SYNCED } from '../../events/transaction-events.js';
 
 const Body = Type.Object({
 	account_id: Type.String({ minLength: 1 }),
@@ -19,6 +23,7 @@ interface Options {
 	sandbox?: boolean;
 	bankGateway?: BankGateway;
 	repo?: TransactionRepo;
+	categoryClient?: CategoryClient;
 }
 
 export async function postSyncEnableBankingRoute(
@@ -26,8 +31,18 @@ export async function postSyncEnableBankingRoute(
 	opts: Options = {},
 ) {
 	const repo = opts.repo ?? new NeonTransactionRepo(fastify.db);
-
+	const categoryClient = opts.categoryClient ?? new AnthropicCategoryClient();
 	const secret = process.env.SYNC_SECRET;
+
+	const listener = () => {
+		categorizeTransactions(repo, categoryClient).catch(
+			(err) => fastify.log.error({ err }, 'Background categorization failed'),
+		);
+	};
+	transactionEvents.on(TRANSACTIONS_SYNCED, listener);
+	fastify.addHook('onClose', () => {
+		transactionEvents.removeListener(TRANSACTIONS_SYNCED, listener);
+	});
 
 	fastify.post<{ Body: Body }>(
 		'/sync-enablebanking',
@@ -52,6 +67,7 @@ export async function postSyncEnableBankingRoute(
 
 			try {
 				const result = await syncTransactions(bankGateway, repo);
+				transactionEvents.emit(TRANSACTIONS_SYNCED);
 				return reply.send(result);
 			} catch (err) {
 				if (

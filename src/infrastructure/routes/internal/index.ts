@@ -4,6 +4,7 @@ import { getEnableBankingTransactionsRoute } from './get-enablebanking-transacti
 import { deleteEnableBankingSessionRoute } from './delete-enablebanking-session.js';
 import { getTransactionsRoute } from './get-transactions.js';
 import { postSyncEnableBankingRoute } from './post-sync-enablebanking.js';
+import { postCategorizeTransactionsRoute } from './post-categorize-transactions.js';
 
 interface Options {
 	sandbox?: boolean;
@@ -18,4 +19,5 @@ export default function internalRoutes(
 	fastify.register(deleteEnableBankingSessionRoute);
 	fastify.register(getTransactionsRoute);
 	fastify.register(postSyncEnableBankingRoute, { sandbox: opts.sandbox });
+	fastify.register(postCategorizeTransactionsRoute);
 }

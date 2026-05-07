@@ -1,4 +1,4 @@
-import type { StoredTransaction, Transaction } from '../domain/types.js';
+import type { StoredTransaction, Transaction, UncategorizedTransaction, CategoryResult } from '../domain/types.js';
 
 export interface TransactionRepo {
 	/**
@@ -13,4 +13,14 @@ export interface TransactionRepo {
 	 * Returns rows in their raw database shape (snake_case, DB-native types).
 	 */
 	getTransactions(): Promise<StoredTransaction[]>;
+
+	/**
+	 * Fetch all transactions where category is NULL.
+	 */
+	getUncategorized(): Promise<UncategorizedTransaction[]>;
+
+	/**
+	 * Update category and sub_category for the given transaction IDs.
+	 */
+	updateCategories(results: CategoryResult[]): Promise<void>;
 }

@@ -25,6 +25,8 @@ describe('syncTransactions', () => {
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => 1),
 			getTransactions: mock.fn(async () => []),
+			getUncategorized: mock.fn(async () => []),
+			updateCategories: mock.fn(async () => undefined),
 		};
 
 		const result = await syncTransactions(bankGateway, repo);
@@ -41,6 +43,8 @@ describe('syncTransactions', () => {
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => 0),
 			getTransactions: mock.fn(async () => []),
+			getUncategorized: mock.fn(async () => []),
+			updateCategories: mock.fn(async () => undefined),
 		};
 
 		const result = await syncTransactions(bankGateway, repo);
@@ -59,6 +63,8 @@ describe('syncTransactions', () => {
 		const repo: TransactionRepo = {
 			upsert: mock.fn(async () => 0),
 			getTransactions: mock.fn(async () => []),
+			getUncategorized: mock.fn(async () => []),
+			updateCategories: mock.fn(async () => undefined),
 		};
 
 		await assert.rejects(() => syncTransactions(bankGateway, repo), {
@@ -75,6 +81,8 @@ describe('syncTransactions', () => {
 				throw new Error('DB down');
 			}),
 			getTransactions: mock.fn(async () => []),
+			getUncategorized: mock.fn(async () => []),
+			updateCategories: mock.fn(async () => undefined),
 		};
 
 		await assert.rejects(() => syncTransactions(bankGateway, repo), {

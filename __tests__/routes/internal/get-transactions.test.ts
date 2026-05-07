@@ -18,6 +18,8 @@ const storedTx: StoredTransaction = {
 	creditor_iban: null,
 	debitor: null,
 	debitor_iban: null,
+	category: null,
+	sub_category: null,
 };
 
 describe('GET /transactions', () => {
@@ -25,6 +27,8 @@ describe('GET /transactions', () => {
 		const mockRepo: TransactionRepo = {
 			upsert: mock.fn(async () => 0),
 			getTransactions: mock.fn(async () => [storedTx]),
+			getUncategorized: mock.fn(async () => []),
+			updateCategories: mock.fn(async () => undefined),
 		};
 
 		const app = Fastify();
@@ -48,6 +52,8 @@ describe('GET /transactions', () => {
 		const mockRepo: TransactionRepo = {
 			upsert: mock.fn(async () => 0),
 			getTransactions: mock.fn(async () => []),
+			getUncategorized: mock.fn(async () => []),
+			updateCategories: mock.fn(async () => undefined),
 		};
 
 		const app = Fastify();
@@ -69,6 +75,8 @@ describe('GET /transactions', () => {
 			getTransactions: mock.fn(async () => {
 				throw new Error('connection refused');
 			}),
+			getUncategorized: mock.fn(async () => []),
+			updateCategories: mock.fn(async () => undefined),
 		};
 
 		const app = Fastify();
