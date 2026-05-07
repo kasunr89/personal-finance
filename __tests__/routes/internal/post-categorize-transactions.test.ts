@@ -2,7 +2,7 @@ import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import Fastify from 'fastify';
 import type { TransactionRepo } from '../../../src/ports/transaction-repo.js';
-import type { CategoryClient } from '../../../src/ports/category-client.js';
+import type { TransactionCategoryGateway } from '../../../src/ports/transaction-category-gateway.js';
 
 process.env.SYNC_SECRET = 'test-secret';
 
@@ -17,7 +17,7 @@ const mockRepo: TransactionRepo = {
 	updateCategories: mock.fn(async () => undefined),
 };
 
-const mockCategoryClient: CategoryClient = {
+const mockTransactionCategoryGateway: TransactionCategoryGateway = {
 	categorize: mock.fn(async () => [
 		{ id: 1, category: 'Transport', sub_category: 'Ride-hailing' },
 	]),
@@ -29,7 +29,7 @@ async function buildApp() {
 		await import('../../../src/infrastructure/routes/internal/post-categorize-transactions.js');
 	app.register(postCategorizeTransactionsRoute, {
 		repo: mockRepo,
-		categoryClient: mockCategoryClient,
+		categoryClient: mockTransactionCategoryGateway,
 	});
 	return app;
 }
@@ -82,7 +82,7 @@ describe('POST /categorize-transactions', () => {
 			await import('../../../src/infrastructure/routes/internal/post-categorize-transactions.js');
 		app.register(postCategorizeTransactionsRoute, {
 			repo: failingRepo,
-			categoryClient: mockCategoryClient,
+			categoryClient: mockTransactionCategoryGateway,
 		});
 
 		const response = await app.inject({

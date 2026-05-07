@@ -2,7 +2,7 @@ import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import { categorizeTransactions } from '../../src/usecases/categorize-transactions.js';
 import type { TransactionRepo } from '../../src/ports/transaction-repo.js';
-import type { CategoryClient } from '../../src/ports/category-client.js';
+import type { TransactionCategoryGateway } from '../../src/ports/transaction-category-gateway.js';
 import type { UncategorizedTransaction, CategoryResult } from '../../src/domain/types.js';
 
 const uncategorized: UncategorizedTransaction[] = [
@@ -25,7 +25,7 @@ function makeRepo(overrides: Partial<TransactionRepo> = {}): TransactionRepo {
 	};
 }
 
-function makeClient(results: CategoryResult[] = aiResults): CategoryClient {
+function makeClient(results: CategoryResult[] = aiResults): TransactionCategoryGateway {
 	return {
 		categorize: mock.fn(async () => results),
 	};
@@ -94,7 +94,7 @@ describe('categorizeTransactions', () => {
 
 	it('propagates AI client errors', async () => {
 		const repo = makeRepo();
-		const client: CategoryClient = {
+		const client: TransactionCategoryGateway = {
 			categorize: mock.fn(async () => {
 				throw new Error('Anthropic API error');
 			}),

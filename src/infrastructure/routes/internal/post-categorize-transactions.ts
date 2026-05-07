@@ -1,13 +1,13 @@
 import type { FastifyInstance } from 'fastify';
 import type { TransactionRepo } from '../../../ports/transaction-repo.js';
-import type { CategoryClient } from '../../../ports/category-client.js';
+import type { TransactionCategoryGateway } from '../../../ports/transaction-category-gateway.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
 import { AnthropicCategoryClient } from '../../ai/anthropic-client.js';
 import { categorizeTransactions } from '../../../usecases/categorize-transactions.js';
 
 interface Options {
 	repo?: TransactionRepo;
-	categoryClient?: CategoryClient;
+	categoryClient?: TransactionCategoryGateway;
 }
 
 export async function postCategorizeTransactionsRoute(

@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { Type, type Static } from '@sinclair/typebox';
 import type { BankGateway } from '../../../ports/bank-gateway.js';
 import type { TransactionRepo } from '../../../ports/transaction-repo.js';
-import type { CategoryClient } from '../../../ports/category-client.js';
+import type { TransactionCategoryGateway } from '../../../ports/transaction-category-gateway.js';
 import { EnableBankingAdapter } from '../../../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { NeonTransactionRepo } from '../../../adapters/db/neon-transaction-repo.js';
 import { AnthropicCategoryClient } from '../../ai/anthropic-client.js';
@@ -23,7 +23,7 @@ interface Options {
 	sandbox?: boolean;
 	bankGateway?: BankGateway;
 	repo?: TransactionRepo;
-	categoryClient?: CategoryClient;
+	categoryClient?: TransactionCategoryGateway;
 }
 
 export async function postSyncEnableBankingRoute(

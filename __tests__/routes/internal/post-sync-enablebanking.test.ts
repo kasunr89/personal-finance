@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import Fastify from 'fastify';
 import type { BankGateway } from '../../../src/ports/bank-gateway.js';
 import type { TransactionRepo } from '../../../src/ports/transaction-repo.js';
-import type { CategoryClient } from '../../../src/ports/category-client.js';
+import type { TransactionCategoryGateway } from '../../../src/ports/transaction-category-gateway.js';
 
 process.env.SYNC_SECRET = 'test-secret';
 
@@ -21,7 +21,7 @@ const mockRepo: TransactionRepo = {
 	updateCategories: mock.fn(async () => undefined),
 };
 
-const mockCategoryClient: CategoryClient = {
+const mockTransactionCategoryGateway: TransactionCategoryGateway = {
 	categorize: mock.fn(async () => []),
 };
 
@@ -32,7 +32,7 @@ async function buildApp() {
 	app.register(postSyncEnableBankingRoute, {
 		bankGateway: mockBankGateway,
 		repo: mockRepo,
-		categoryClient: mockCategoryClient,
+		categoryClient: mockTransactionCategoryGateway,
 	});
 	return app;
 }
@@ -96,7 +96,7 @@ describe('POST /sync-enablebanking', () => {
 		app.register(postSyncEnableBankingRoute, {
 			bankGateway: failingBankGateway,
 			repo: mockRepo,
-			categoryClient: mockCategoryClient,
+			categoryClient: mockTransactionCategoryGateway,
 		});
 
 		const response = await app.inject({
@@ -124,7 +124,7 @@ describe('POST /sync-enablebanking', () => {
 		app.register(postSyncEnableBankingRoute, {
 			bankGateway: failingBankGateway,
 			repo: mockRepo,
-			categoryClient: mockCategoryClient,
+			categoryClient: mockTransactionCategoryGateway,
 		});
 
 		const response = await app.inject({

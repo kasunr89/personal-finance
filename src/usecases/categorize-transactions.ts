@@ -1,9 +1,9 @@
 import type { TransactionRepo } from '../ports/transaction-repo.js';
-import type { CategoryClient } from '../ports/category-client.js';
+import type { TransactionCategoryGateway } from '../ports/transaction-category-gateway.js';
 
 export async function categorizeTransactions(
 	repo: TransactionRepo,
-	client: CategoryClient,
+	client: TransactionCategoryGateway,
 ): Promise<{ categorized: number }> {
 	const uncategorized = await repo.getUncategorized();
 	if (uncategorized.length === 0) return { categorized: 0 };
