@@ -8,10 +8,7 @@ export async function categorizeTransactions(
 	const uncategorized = await repo.getUncategorized();
 	if (uncategorized.length === 0) return { categorized: 0 };
 
-	console.log('Starting Open AI call');
 	const results = await client.categorize(uncategorized);
-
-	console.log('End Open AI call');
 	await repo.updateCategories(results);
 	return { categorized: results.length };
 }
