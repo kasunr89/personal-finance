@@ -27,6 +27,7 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 			getUncategorized: mock.fn(async () => []),
 			updateCategories: mock.fn(async () => undefined),
+			getById: mock.fn(async () => null),
 		};
 
 		const result = await syncTransactions(bankGateway, repo);
@@ -45,6 +46,7 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 			getUncategorized: mock.fn(async () => []),
 			updateCategories: mock.fn(async () => undefined),
+			getById: mock.fn(async () => null),
 		};
 
 		const result = await syncTransactions(bankGateway, repo);
@@ -65,6 +67,7 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 			getUncategorized: mock.fn(async () => []),
 			updateCategories: mock.fn(async () => undefined),
+			getById: mock.fn(async () => null),
 		};
 
 		await assert.rejects(() => syncTransactions(bankGateway, repo), {
@@ -83,6 +86,7 @@ describe('syncTransactions', () => {
 			getTransactions: mock.fn(async () => []),
 			getUncategorized: mock.fn(async () => []),
 			updateCategories: mock.fn(async () => undefined),
+			getById: mock.fn(async () => null),
 		};
 
 		await assert.rejects(() => syncTransactions(bankGateway, repo), {

@@ -29,6 +29,7 @@ describe('GET /transactions', () => {
 			getTransactions: mock.fn(async () => [storedTx]),
 			getUncategorized: mock.fn(async () => []),
 			updateCategories: mock.fn(async () => undefined),
+			getById: mock.fn(async () => null),
 		};
 
 		const app = Fastify();
@@ -54,6 +55,7 @@ describe('GET /transactions', () => {
 			getTransactions: mock.fn(async () => []),
 			getUncategorized: mock.fn(async () => []),
 			updateCategories: mock.fn(async () => undefined),
+			getById: mock.fn(async () => null),
 		};
 
 		const app = Fastify();
@@ -77,6 +79,7 @@ describe('GET /transactions', () => {
 			}),
 			getUncategorized: mock.fn(async () => []),
 			updateCategories: mock.fn(async () => undefined),
+			getById: mock.fn(async () => null),
 		};
 
 		const app = Fastify();

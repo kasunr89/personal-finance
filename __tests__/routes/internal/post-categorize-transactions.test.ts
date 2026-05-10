@@ -12,9 +12,18 @@ const mockRepo: TransactionRepo = {
 	upsert: mock.fn(async () => 0),
 	getTransactions: mock.fn(async () => []),
 	getUncategorized: mock.fn(async () => [
-		{ id: 1, description: 'BOLT.EU', type: 'credit' },
+		{
+			id: 1,
+			description: 'BOLT.EU',
+			type: 'credit',
+			creditor: 'Bolt Technology OÜ',
+			creditor_iban: null,
+			debitor: 'Kasun Ramadasa',
+			debitor_iban: 'EE123456789012345678',
+		},
 	]),
 	updateCategories: mock.fn(async () => undefined),
+	getById: mock.fn(async () => null),
 };
 
 const mockTransactionCategoryGateway: TransactionCategoryGateway = {
@@ -75,6 +84,7 @@ describe('POST /categorize-transactions', () => {
 				throw new Error('DB down');
 			}),
 			updateCategories: mock.fn(async () => undefined),
+			getById: mock.fn(async () => null),
 		};
 
 		const app = Fastify({ logger: false });

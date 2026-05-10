@@ -31,9 +31,11 @@ const tx2: Transaction = {
 function createMockDb(
 	insertResult: { id: number } | undefined,
 	selectResult: Record<string, unknown>[] = [],
+	selectOneResult: Record<string, unknown> | undefined = undefined,
 ) {
 	const executeTakeFirst = mock.fn(async () => insertResult);
 	const execute = mock.fn(async () => selectResult);
+	const selectOneTakeFirst = mock.fn(async () => selectOneResult);
 
 	const db = {
 		insertInto: () => ({
@@ -44,13 +46,18 @@ function createMockDb(
 			}),
 		}),
 		selectFrom: () => ({
-			selectAll: () => ({ execute }),
+			selectAll: () => ({
+				execute,
+				where: () => ({ executeTakeFirst: selectOneTakeFirst }),
+			}),
 		}),
 		_executeTakeFirst: executeTakeFirst,
 		_execute: execute,
+		_selectOneTakeFirst: selectOneTakeFirst,
 	} as unknown as Kysely<Database> & {
 		_executeTakeFirst: typeof executeTakeFirst;
 		_execute: typeof execute;
+		_selectOneTakeFirst: typeof selectOneTakeFirst;
 	};
 
 	return db;
@@ -90,6 +97,46 @@ describe('NeonTransactionRepo', () => {
 		const count = await repo.upsert([tx1]);
 
 		assert.equal(count, 0);
+	});
+
+	it('returns stored transaction by id', async () => {
+		const stored = {
+			id: 1,
+			amount: '-15.5',
+			currency: 'EUR',
+			description: 'Coffee',
+			source: 'lhv',
+			source_reference_id: 'tx-1',
+			type: 'debit',
+			date: new Date('2026-04-01'),
+			created_at: new Date('2026-04-01'),
+			creditor: null,
+			creditor_iban: null,
+			debitor: null,
+			debitor_iban: null,
+			category: null,
+			sub_category: null,
+		};
+		const db = createMockDb(undefined, [], stored);
+		const { NeonTransactionRepo } =
+			await import('../../../src/adapters/db/neon-transaction-repo.js');
+		const repo = new NeonTransactionRepo(db);
+
+		const result = await repo.getById(1);
+
+		assert.deepEqual(result, stored);
+		assert.equal(db._selectOneTakeFirst.mock.calls.length, 1);
+	});
+
+	it('returns null when transaction is not found', async () => {
+		const db = createMockDb(undefined, [], undefined);
+		const { NeonTransactionRepo } =
+			await import('../../../src/adapters/db/neon-transaction-repo.js');
+		const repo = new NeonTransactionRepo(db);
+
+		const result = await repo.getById(99);
+
+		assert.equal(result, null);
 	});
 
 	it('returns rows from getTransactions', async () => {

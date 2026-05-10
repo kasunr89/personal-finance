@@ -38,10 +38,19 @@ export class NeonTransactionRepo implements TransactionRepo {
 		return this.db.selectFrom('transactions').selectAll().execute();
 	}
 
+	async getById(id: number): Promise<StoredTransaction | null> {
+		const row = await this.db
+			.selectFrom('transactions')
+			.selectAll()
+			.where('id', '=', id)
+			.executeTakeFirst();
+		return row ?? null;
+	}
+
 	async getUncategorized(): Promise<UncategorizedTransaction[]> {
 		return this.db
 			.selectFrom('transactions')
-			.select(['id', 'description', 'type'])
+			.select(['id', 'description', 'type', 'creditor', 'creditor_iban', 'debitor', 'debitor_iban'])
 			.where('category', 'is', null)
 			.execute();
 	}

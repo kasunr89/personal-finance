@@ -74,6 +74,7 @@ infrastructure/  → Fastify app wiring, route handlers, Lambda entrypoint
 | `ENABLEBANKING_ASPSP_NAME`, `ENABLEBANKING_ASPSP_COUNTRY` | EnableBankingClient `startAuth` (e.g. `LHV Pank`, `EE`) |
 | `SYNC_SECRET` | `POST /api/v1_internal/sync-enablebanking` bearer token guard |
 | `OPENAI_API_KEY` | `OpenAiClient` (transaction categorization) |
+| `OWN_ACCOUNTS` | `OpenAiClient` (comma-separated `name:IBAN` pairs, e.g. `LHV Main:EE123,Wise:EE456`) |
 
 ## Testing
 

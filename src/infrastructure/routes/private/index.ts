@@ -1,6 +1,8 @@
 import type { FastifyInstance } from 'fastify';
-import { postTestCategorizationRoute } from './post-test-categorization.js';
+import { postCategorizeTransactionsRoute } from './post-categorize-transactions.js';
+import { getCategorizeTransactionRoute } from './get-categorize-transaction.js';
 
 export default function privateRoutes(fastify: FastifyInstance) {
-	fastify.register(postTestCategorizationRoute);
+	fastify.register(postCategorizeTransactionsRoute);
+	fastify.register(getCategorizeTransactionRoute);
 }

@@ -19,6 +19,7 @@ const mockRepo: TransactionRepo = {
 	getTransactions: mock.fn(async () => []),
 	getUncategorized: mock.fn(async () => []),
 	updateCategories: mock.fn(async () => undefined),
+	getById: mock.fn(async () => null),
 };
 
 const mockTransactionCategoryGateway: TransactionCategoryGateway = {

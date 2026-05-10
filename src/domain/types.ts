@@ -51,6 +51,10 @@ export interface UncategorizedTransaction {
 	id: number;
 	description: string | null;
 	type: string;
+	creditor?: string | null;
+	creditor_iban?: string | null;
+	debitor?: string | null;
+	debitor_iban?: string | null;
 }
 
 /** Category assignment returned by the AI for a single transaction. */

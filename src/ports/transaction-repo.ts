@@ -23,4 +23,9 @@ export interface TransactionRepo {
 	 * Update category and sub_category for the given transaction IDs.
 	 */
 	updateCategories(results: CategoryResult[]): Promise<void>;
+
+	/**
+	 * Fetch a single transaction by primary key. Returns null if not found.
+	 */
+	getById(id: number): Promise<StoredTransaction | null>;
 }

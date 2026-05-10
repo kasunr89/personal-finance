@@ -8,6 +8,10 @@ const Body = Type.Object({
 			id: Type.Number(),
 			description: Type.Union([Type.String(), Type.Null()]),
 			type: Type.String(),
+			creditor: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+			creditor_iban: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+			debitor: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+			debitor_iban: Type.Optional(Type.Union([Type.String(), Type.Null()])),
 		}),
 		{ minItems: 1 },
 	),
@@ -15,14 +19,14 @@ const Body = Type.Object({
 
 type Body = Static<typeof Body>;
 
-export async function postTestCategorizationRoute(
+export async function postCategorizeTransactionsRoute(
 	fastify: FastifyInstance,
 ) {
 	const secret = process.env.SYNC_SECRET;
 	const client = new OpenAiClient();
 
 	fastify.post<{ Body: Body }>(
-		'/test-categorization',
+		'/categorize-transactions',
 		{ schema: { body: Body } },
 		async (request, reply) => {
 			const auth = request.headers.authorization;

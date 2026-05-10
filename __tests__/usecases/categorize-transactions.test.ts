@@ -6,8 +6,24 @@ import type { TransactionCategoryGateway } from '../../src/ports/transaction-cat
 import type { UncategorizedTransaction, CategoryResult } from '../../src/domain/types.js';
 
 const uncategorized: UncategorizedTransaction[] = [
-	{ id: 1, description: 'BOLT.EU/R/123', type: 'credit' },
-	{ id: 2, description: 'Pipedrive payroll', type: 'debit' },
+	{
+		id: 1,
+		description: 'BOLT.EU/R/123',
+		type: 'credit',
+		creditor: 'Bolt Technology OÜ',
+		creditor_iban: null,
+		debitor: 'Kasun Ramadasa',
+		debitor_iban: 'EE123456789012345678',
+	},
+	{
+		id: 2,
+		description: 'Pipedrive payroll',
+		type: 'debit',
+		creditor: 'Pipedrive OÜ',
+		creditor_iban: null,
+		debitor: null,
+		debitor_iban: null,
+	},
 ];
 
 const aiResults: CategoryResult[] = [
@@ -21,6 +37,7 @@ function makeRepo(overrides: Partial<TransactionRepo> = {}): TransactionRepo {
 		getTransactions: mock.fn(async () => []),
 		getUncategorized: mock.fn(async () => uncategorized),
 		updateCategories: mock.fn(async () => undefined),
+		getById: mock.fn(async () => null),
 		...overrides,
 	};
 }
