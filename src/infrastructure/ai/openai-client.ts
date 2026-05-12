@@ -20,23 +20,47 @@ Type convention: 'debit' means money received (income), 'credit' means money spe
 Main bank account: ${mainAccount}
 My other accounts: ${accountsBlock}
 
-Analyze creditor and debitor iban to identify transfer between my accounts when classifying.
+Analyse creditor and debitor name and IBAN to identify transfers between my own accounts.
 
 Classify each transaction into one of these categories and subcategories:
-- Income: Salary, Parking Rental, Refunds
-- Housing: Mortgage Principal, Mortgage Interest, Utilities, Insurance
-- Savings & Investments: Micro-savings, Recurring Savings, Growth Account
-- Food: Groceries, Food Delivery, Dining Out
-- Transport: Ride-hailing, Parking, Public Transport
-- Health: Gym, Medical, Dental
-- Entertainment: Streaming, Sports & Leisure, Nightlife
-- Banking Fees: Card Fees, ATM Fees, Account Fees
-- Transfers: Wise Transfer, LHV Internal Transfer
-- Taxes: Income Tax
+- Income:
+	- Salary: salary from Pipedrive
+	- Parking Rental: monthly rental payment for parking
+	- Income Tax Refunds: Yearly income tax refunds
+- Housing:
+	- Mortgage Principal: Home loan capital payments
+	- Mortgage Interest: Home loan interest payments
+	- Utilities: Utility bill payments
+	- Insurance: House insurance payment
+- Savings & Investments:
+	- Micro-savings: Mirco savings deductions for every trasaction from main account to savings account
+	- Recurring Savings: Monthly savings transfer from main account to savings account
+	- Growth Account: Micro investment deductions from every trasaction from main account to growth account 
+- Food:
+	- Groceries: Payments for groceries
+	- Food Delivery: Payments for food deliveries
+	- Dining Out: Payments for dining out like restaurants
+- Transport:
+	- Ride-hailing: Ride hailing payments (eg: bolt drive)
+- Health:
+	- Gym: Gym membership
+	- Dental: Payments for dentist visits
+- Entertainment:
+	- Streaming: Streaming subscriptions
+	- Nightlife: Expenses of going out
+- Banking Fees:
+	- Card Fees: Monthly fees for debit cars
+- Transfers:
+	- Wise Self Transfer: Transfer to my wise account
 
-Return ONLY a valid JSON array with no extra text, markdown, or explanation:
-[{ "id": <number>, "category": "<main category>", "sub_category": "<subcategory>" }]`;
+Return Uncategorised in case there's a confusion of categorisation.`;
 }
+
+const FORMAT_JSON = `\n\nReturn ONLY a valid JSON array with no extra text, markdown, or explanation:
+[{ "id": <number>, "category": "<main category>", "sub_category": "<subcategory>" }]`;
+
+const FORMAT_JSON_WITH_REASON = `\n\nReturn ONLY a valid JSON array with no extra text, markdown, or explanation:
+[{ "id": <number>, "category": "<main category>", "sub_category": "<subcategory>", "reason": "<one sentence explaining why>" }]`;
 
 export class OpenAiClient implements TransactionCategoryGateway {
 	private client: OpenAI;
@@ -49,11 +73,12 @@ export class OpenAiClient implements TransactionCategoryGateway {
 		this.systemPrompt = buildSystemPrompt(process.env.MAIN_ACCOUNT, process.env.OWN_ACCOUNTS);
 	}
 
-	async categorize(transactions: UncategorizedTransaction[]): Promise<CategoryResult[]> {
+	async categorize(transactions: UncategorizedTransaction[], options: { includeReason?: boolean } = {}): Promise<CategoryResult[]> {
+		const format = options.includeReason ? FORMAT_JSON_WITH_REASON : FORMAT_JSON;
 		const response = await this.client.chat.completions.create({
 			model: 'gpt-4o-mini',
 			messages: [
-				{ role: 'system', content: this.systemPrompt },
+				{ role: 'system', content: this.systemPrompt + format },
 				{ role: 'user', content: JSON.stringify(transactions) },
 			],
 		});

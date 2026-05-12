@@ -62,4 +62,5 @@ export interface CategoryResult {
 	id: number;
 	category: string;
 	sub_category: string;
+	reason?: string;
 }

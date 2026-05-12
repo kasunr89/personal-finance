@@ -32,7 +32,7 @@ export async function getCategorizeTransactionRoute(
 			}
 
 			try {
-				const results = await client.categorize([{
+				const result = await client.categorize([{
 					id: tx.id,
 					description: tx.description,
 					type: tx.type,
@@ -40,14 +40,9 @@ export async function getCategorizeTransactionRoute(
 					creditor_iban: tx.creditor_iban,
 					debitor: tx.debitor,
 					debitor_iban: tx.debitor_iban,
-				}]);
+				}], { includeReason: true });
 
-				const result = results[0];
-				if (!result) {
-					return reply.status(500).send({ error: 'OpenAI categorization failed' });
-				}
-
-				return reply.send({ tx, result });
+				return reply.send({ result, tx });
 			} catch {
 				return reply.status(500).send({ error: 'OpenAI categorization failed' });
 			}
