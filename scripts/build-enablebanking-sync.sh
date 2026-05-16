@@ -13,7 +13,7 @@ npx esbuild src/infrastructure/lambda-enablebanking-sync.ts \
 echo "==> Zipping..."
 
 mkdir -p dist
-cp enablebanking_private.pem dist/
-cd dist && zip -j lambda-enablebanking-sync.zip lambda-enablebanking-sync.js enablebanking_private.pem && cd ..
+cp a6f0a3de-981d-44d4-a522-a6b3fb146254.pem dist/
+cd dist && zip -j lambda-enablebanking-sync.zip lambda-enablebanking-sync.js a6f0a3de-981d-44d4-a522-a6b3fb146254.pem && cd ..
 
 echo "==> Build complete: dist/lambda-enablebanking-sync.zip"
