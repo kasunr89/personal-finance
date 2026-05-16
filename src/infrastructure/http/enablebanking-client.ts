@@ -55,7 +55,7 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 			);
 		}
 
-		const privateKey = keyContent ?? fs.readFileSync(keyPath!);
+		const privateKey = keyContent ? keyContent.replace(/\\n/g, '\n') : fs.readFileSync(keyPath!);
 		const now = Math.floor(Date.now() / 1000);
 
 		return jwt.sign(
