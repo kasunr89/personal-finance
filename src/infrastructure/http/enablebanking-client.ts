@@ -46,15 +46,16 @@ function toBankSession(raw: EnableBankingSession): BankSession {
 export class EnableBankingClient implements EnableBankingSessionGateway, EnableBankingTransactionGateway {
 	private makeJwt(): string {
 		const appId = process.env.ENABLEBANKING_APP_ID;
+		const keyContent = process.env.ENABLEBANKING_PRIVATE_KEY;
 		const keyPath = process.env.ENABLEBANKING_PRIVATE_KEY_PATH;
 
-		if (!appId || !keyPath) {
+		if (!appId || (!keyContent && !keyPath)) {
 			throw new Error(
-				'ENABLEBANKING_APP_ID and ENABLEBANKING_PRIVATE_KEY_PATH are required',
+				'ENABLEBANKING_APP_ID and either ENABLEBANKING_PRIVATE_KEY or ENABLEBANKING_PRIVATE_KEY_PATH are required',
 			);
 		}
 
-		const privateKey = fs.readFileSync(keyPath);
+		const privateKey = keyContent ?? fs.readFileSync(keyPath!);
 		const now = Math.floor(Date.now() / 1000);
 
 		return jwt.sign(
