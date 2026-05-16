@@ -7,6 +7,13 @@ export interface TransactionsTable extends Omit<StoredTransaction, 'id' | 'creat
 	created_at: Generated<Date>;
 }
 
+export interface EnablebankingAccountsTable {
+	account_id: string;
+	created_at: Generated<Date>;
+	expire_at: Date;
+}
+
 export interface Database {
 	transactions: TransactionsTable;
+	enablebanking_accounts: EnablebankingAccountsTable;
 }

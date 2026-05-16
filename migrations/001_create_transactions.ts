@@ -18,7 +18,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('date', 'date', (col) => col.notNull())
 		.addColumn('category', 'varchar(30)')
 		.addColumn('sub_category', 'varchar(30)')
-		.addColumn('created_at', 'timestamptz', (col) => col.notNull().defaultTo(sql`now()`))
+		.addColumn('created_at', 'timestamp', (col) => col.notNull().defaultTo(sql`now()`))
 		.addUniqueConstraint('unique_source', ['source', 'source_reference_id'])
 		.execute();
 }

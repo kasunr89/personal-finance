@@ -94,11 +94,11 @@ describe('GET /categorize-transaction/:id', () => {
 		});
 		assert.equal(response.statusCode, 200);
 		const body = JSON.parse(response.body);
-		assert.deepEqual(body.result, { id: 1, category: 'Income', sub_category: 'Rental' });
+		assert.deepEqual(body.result, [{ id: 1, category: 'Income', sub_category: 'Rental' }]);
 		assert.equal(body.tx.id, 1);
 	});
 
-	it('returns 500 when OpenAI returns empty result', async () => {
+	it('returns empty result array when OpenAI returns no results', async () => {
 		const client: TransactionCategoryGateway = {
 			categorize: mock.fn(async () => []),
 		};
@@ -108,8 +108,8 @@ describe('GET /categorize-transaction/:id', () => {
 			url: '/categorize-transaction/1',
 			headers: { authorization: AUTH },
 		});
-		assert.equal(response.statusCode, 500);
-		assert.deepEqual(JSON.parse(response.body), { error: 'OpenAI categorization failed' });
+		assert.equal(response.statusCode, 200);
+		assert.deepEqual(JSON.parse(response.body).result, []);
 	});
 
 	it('returns 500 when OpenAI throws', async () => {
