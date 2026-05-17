@@ -101,16 +101,9 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 		redirectUrl: string,
 		validUntil: string,
 	): Promise<{ url: string }> {
-		const name = process.env.ENABLEBANKING_ASPSP_NAME;
-		const country = process.env.ENABLEBANKING_ASPSP_COUNTRY;
-		if (!name || !country) {
-			throw new Error(
-				'ENABLEBANKING_ASPSP_NAME and ENABLEBANKING_ASPSP_COUNTRY are required',
-			);
-		}
 		return (await this.apiRequest('POST', '/auth', {
 			access: { valid_until: validUntil },
-			aspsp: { name, country },
+			aspsp: { name: 'LHV Pank', country: 'EE' },
 			state: crypto.randomUUID(),
 			redirect_url: redirectUrl,
 			psu_type: 'personal',
