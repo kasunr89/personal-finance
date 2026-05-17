@@ -13,7 +13,8 @@
     "migrate": "npx tsx --env-file=.env scripts/migrate.ts",
     "build:sync": "./scripts/build-enablebanking-sync.sh",
     "deploy:sync": "./scripts/deploy-enablebanking-sync.sh",
-    "teardown:sync": "./scripts/teardown-enablebanking-sync.sh"
+    "teardown:sync": "./scripts/teardown-enablebanking-sync.sh",
+    "sync:local": "npx tsx --env-file=.env scripts/run-enablebanking-sync-local.ts"
   },
   "keywords": [],
   "author": "",

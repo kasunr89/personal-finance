@@ -62,7 +62,7 @@ if [ -z "$FUNCTION_EXISTS" ]; then
   echo "    Creating function $FUNCTION_NAME..."
   aws lambda create-function \
     --function-name "$FUNCTION_NAME" \
-    --runtime nodejs20.x \
+    --runtime nodejs24.x \
     --architectures arm64 \
     --role "$ROLE_ARN" \
     --handler lambda-enablebanking-sync.handler \
@@ -142,7 +142,11 @@ if [ -z "$SCHEDULE_EXISTS" ]; then
     --flexible-time-window '{"Mode": "OFF"}' \
     --target "{
       \"Arn\": \"$LAMBDA_ARN\",
-      \"RoleArn\": \"$SCHEDULER_ROLE_ARN\"
+      \"RoleArn\": \"$SCHEDULER_ROLE_ARN\",
+      \"RetryPolicy\": {
+        \"MaximumRetryAttempts\": 2,
+        \"MaximumEventAgeInSeconds\": 3600
+      }
     }" \
     --region "$REGION" > /dev/null
   echo "    Schedule created: cron(0 8,20 * * ? *) UTC"

@@ -9,7 +9,9 @@ import { syncTransactions } from '../usecases/sync-bank-transactions.js';
 
 export const handler: Handler = async () => {
 	const url = process.env.DATABASE_URL;
-	if (!url) throw new Error('DATABASE_URL is required');
+	if (!url) {
+		throw new Error('DATABASE_URL is required');
+	}
 
 	const db = createDb(url);
 	const accountRepo = new NeonAccountRepo(db);
@@ -21,9 +23,10 @@ export const handler: Handler = async () => {
 		return { synced: 0 };
 	}
 
-	const yesterday = new Date();
-	yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-	const dateFrom = yesterday.toISOString().slice(0, 10);
+	const lookbackDays = parseInt(process.env.SYNC_LOOKBACK_DAYS ?? '1', 10);
+	const dateFrom = new Date();
+	dateFrom.setUTCDate(dateFrom.getUTCDate() - lookbackDays);
+	const dateFromStr = dateFrom.toISOString().slice(0, 10);
 
 	const sandbox = process.env.SANDBOX === 'true';
 
@@ -34,10 +37,11 @@ export const handler: Handler = async () => {
 				? new FileEnableBankingClient('data/transactions-2026-04-01.json')
 				: new EnableBankingClient(),
 			account_id,
-			dateFrom,
+			dateFromStr,
 		);
+		
 		const result = await syncTransactions(bankGateway, txRepo);
-		console.log({ account_id, synced: result.synced, dateFrom });
+		console.log({ account_id, synced: result.synced, dateFrom: dateFromStr });
 		results.push({ account_id, synced: result.synced });
 	}
 
