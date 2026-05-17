@@ -48,9 +48,10 @@ infrastructure/  → Fastify app wiring, route handlers, Lambda entrypoint
 **Sandbox mode:** When the server starts with `sandbox: true`, the sync route uses `FileEnableBankingClient` (reads `data/transactions-2026-04-01.json`) instead of calling the real Enable Banking API.
 
 **Enable Banking OAuth flow:**
-1. Run `npx tsx scripts/authorize-enablebanking.ts` — opens the bank auth URL in the browser
-2. The running dev server handles `GET /callback?code=...`, exchanges the code for a session, and returns `{ session_id, accounts }` as JSON
-3. Save `ENABLEBANKING_SESSION_ID` and account UIDs to `.env`
+1. With the dev server running, call `GET /auth/enablebanking-start` — returns the bank auth URL
+2. Open the URL in the browser to authorize
+3. The running dev server handles `GET /callback?code=...`, exchanges the code for a session, and returns `{ session_id, accounts }` as JSON
+4. Save `ENABLEBANKING_SESSION_ID` and account UIDs to `.env`
 
 ## API routes
 
@@ -71,7 +72,6 @@ infrastructure/  → Fastify app wiring, route handlers, Lambda entrypoint
 | `DATABASE_URL` | NeonTransactionRepo |
 | `ENABLEBANKING_APP_ID`, `ENABLEBANKING_PRIVATE_KEY_PATH` | EnableBankingClient (RS256 JWT signing) |
 | `ENABLEBANKING_SESSION_ID` | EnableBankingClient |
-| `ENABLEBANKING_ASPSP_NAME`, `ENABLEBANKING_ASPSP_COUNTRY` | EnableBankingClient `startAuth` (e.g. `LHV Pank`, `EE`) |
 | `SYNC_SECRET` | `POST /api/v1_internal/sync-enablebanking` bearer token guard |
 | `OPENAI_API_KEY` | `OpenAiClient` (transaction categorization) |
 | `OWN_ACCOUNTS` | `OpenAiClient` (comma-separated `name:IBAN` pairs, e.g. `LHV Main:EE123,Wise:EE456`) |
