@@ -9,15 +9,14 @@ const Params = Type.Object({
 });
 
 const Reply = Type.Object({
+	id: Type.String(),
 	status: Type.String(),
 	accounts: Type.Array(Type.String()),
-	accountsData: Type.Array(
-		Type.Object({
-			uid: Type.String(),
-			identificationHash: Type.String(),
-		}),
-	),
-	validUntil: Type.String(),
+	bankConnector: Type.Object({
+		name: Type.String(),
+		country: Type.String(),
+	}),
+	expireAt: Type.String(),
 });
 
 type Params = Static<typeof Params>;

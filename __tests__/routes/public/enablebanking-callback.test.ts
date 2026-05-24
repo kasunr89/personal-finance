@@ -3,12 +3,14 @@ import assert from 'node:assert/strict';
 import Fastify from 'fastify';
 import type { BankSession } from '../../../src/domain/types.js';
 import type { EnableBankingSessionGateway } from '../../../src/ports/enablebanking-session-gateway.js';
+import type { SessionRepo } from '../../../src/ports/session-repo.js';
 
 const mockSession: BankSession = {
+	id: 'sess-123',
 	status: 'AUTHORIZED',
 	accounts: ['acc-1'],
-	accountsData: [{ uid: 'acc-1', identificationHash: 'hash1' }],
-	validUntil: '2026-07-01',
+	bankConnector: { name: 'LHV Pank', country: 'EE' },
+	expireAt: '2026-07-01',
 };
 
 function makeSessionGateway(
@@ -23,6 +25,16 @@ function makeSessionGateway(
 	};
 }
 
+function makeSessionRepo(overrides?: Partial<SessionRepo>): SessionRepo {
+	return {
+		getAll: mock.fn(async () => []),
+		getByBankKey: mock.fn(async () => []),
+		upsert: mock.fn(async () => {}),
+		deleteByBankKey: mock.fn(async () => {}),
+		...overrides,
+	};
+}
+
 describe('GET /callback', () => {
 	it('returns 400 when code is missing', async () => {
 		const app = Fastify();
@@ -30,6 +42,7 @@ describe('GET /callback', () => {
 			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
 		app.register(getEnableBankingCallbackRoute, {
 			sessionGateway: makeSessionGateway(),
+			sessionRepo: makeSessionRepo(),
 		});
 
 		const response = await app.inject({ method: 'GET', url: '/callback' });
@@ -45,7 +58,7 @@ describe('GET /callback', () => {
 		const app = Fastify();
 		const { getEnableBankingCallbackRoute } =
 			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
-		app.register(getEnableBankingCallbackRoute, { sessionGateway });
+		app.register(getEnableBankingCallbackRoute, { sessionGateway, sessionRepo: makeSessionRepo() });
 
 		const response = await app.inject({
 			method: 'GET',
@@ -54,7 +67,8 @@ describe('GET /callback', () => {
 		assert.equal(response.statusCode, 200);
 		const body = JSON.parse(response.body);
 		assert.deepEqual(body.accounts, ['acc-1']);
-		assert.equal(body.accountsData[0].uid, 'acc-1');
+		assert.equal(body.bankConnector.name, 'LHV Pank');
+		assert.equal(body.bankConnector.country, 'EE');
 	});
 
 	it('returns 500 when createSession throws', async () => {
@@ -67,7 +81,7 @@ describe('GET /callback', () => {
 		const app = Fastify({ logger: false });
 		const { getEnableBankingCallbackRoute } =
 			await import('../../../src/infrastructure/routes/public/get-enablebanking-callback.js');
-		app.register(getEnableBankingCallbackRoute, { sessionGateway });
+		app.register(getEnableBankingCallbackRoute, { sessionGateway, sessionRepo: makeSessionRepo() });
 
 		const response = await app.inject({
 			method: 'GET',

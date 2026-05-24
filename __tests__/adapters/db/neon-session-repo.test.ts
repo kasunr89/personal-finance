@@ -16,29 +16,29 @@ function createMockDb(selectResult: Record<string, unknown>[] = []) {
 	return db;
 }
 
-describe('NeonAccountRepo', () => {
-	it('returns non-expired accounts from the database', async () => {
-		const accounts = [
+describe('NeonSessionRepo', () => {
+	it('returns non-expired sessions from the database', async () => {
+		const sessions = [
 			{ account_id: 'acc-123', expire_at: new Date('2099-01-01T00:00:00Z') },
 		];
-		const db = createMockDb(accounts);
-		const { NeonAccountRepo } = await import(
-			'../../../src/adapters/db/neon-account-repo.js'
+		const db = createMockDb(sessions);
+		const { NeonSessionRepo } = await import(
+			'../../../src/adapters/db/neon-session-repo.js'
 		);
-		const repo = new NeonAccountRepo(db);
+		const repo = new NeonSessionRepo(db);
 
 		const result = await repo.getAll();
 
-		assert.deepEqual(result, accounts);
+		assert.deepEqual(result, sessions);
 		assert.equal(db._execute.mock.calls.length, 1);
 	});
 
-	it('returns empty array when no active accounts exist', async () => {
+	it('returns empty array when no active sessions exist', async () => {
 		const db = createMockDb([]);
-		const { NeonAccountRepo } = await import(
-			'../../../src/adapters/db/neon-account-repo.js'
+		const { NeonSessionRepo } = await import(
+			'../../../src/adapters/db/neon-session-repo.js'
 		);
-		const repo = new NeonAccountRepo(db);
+		const repo = new NeonSessionRepo(db);
 
 		const result = await repo.getAll();
 

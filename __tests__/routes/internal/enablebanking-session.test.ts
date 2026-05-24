@@ -5,10 +5,11 @@ import type { BankSession } from '../../../src/domain/types.js';
 import type { EnableBankingSessionGateway } from '../../../src/ports/enablebanking-session-gateway.js';
 
 const mockSession: BankSession = {
+	id: 'sess-123',
 	status: 'AUTHORIZED',
 	accounts: ['acc-1'],
-	accountsData: [{ uid: 'acc-1', identificationHash: 'hash1' }],
-	validUntil: '2026-07-01',
+	bankConnector: { name: 'LHV Pank', country: 'EE' },
+	expireAt: '2026-07-01',
 };
 
 function makeSessionGateway(
@@ -40,8 +41,9 @@ describe('GET /enablebanking/sessions/:sessionId', () => {
 		const body = JSON.parse(response.body);
 		assert.equal(body.status, 'AUTHORIZED');
 		assert.deepEqual(body.accounts, ['acc-1']);
-		assert.equal(body.validUntil, '2026-07-01');
-		assert.equal(body.accountsData[0].uid, 'acc-1');
+		assert.equal(body.expireAt, '2026-07-01');
+		assert.equal(body.bankConnector.name, 'LHV Pank');
+		assert.equal(body.bankConnector.country, 'EE');
 	});
 
 	it('returns 500 when provider throws', async () => {

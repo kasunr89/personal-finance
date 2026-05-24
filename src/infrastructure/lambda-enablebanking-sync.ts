@@ -1,6 +1,6 @@
 import type { Handler } from 'aws-lambda';
 import { createDb } from './db/create-db.js';
-import { NeonAccountRepo } from '../adapters/db/neon-account-repo.js';
+import { NeonSessionRepo } from '../adapters/db/neon-session-repo.js';
 import { NeonTransactionRepo } from '../adapters/db/neon-transaction-repo.js';
 import { EnableBankingAdapter } from '../adapters/banks/enablebanking/enablebanking-adapter.js';
 import { EnableBankingClient } from './http/enablebanking-client.js';
@@ -14,12 +14,12 @@ export const handler: Handler = async () => {
 	}
 
 	const db = createDb(url);
-	const accountRepo = new NeonAccountRepo(db);
+	const sessionRepo = new NeonSessionRepo(db);
 	const txRepo = new NeonTransactionRepo(db);
 
-	const accounts = await accountRepo.getAll();
-	if (accounts.length === 0) {
-		console.warn('No active Enable Banking accounts found — all expired or none seeded');
+	const sessions = await sessionRepo.getAll();
+	if (sessions.length === 0) {
+		console.warn('No active Enable Banking sessions found — all expired or none seeded');
 		return { synced: 0 };
 	}
 
@@ -31,18 +31,20 @@ export const handler: Handler = async () => {
 	const sandbox = process.env.SANDBOX === 'true';
 
 	const results: { account_id: string; synced: number }[] = [];
-	for (const { account_id } of accounts) {
-		const bankGateway = new EnableBankingAdapter(
-			sandbox
-				? new FileEnableBankingClient('data/transactions-2026-04-01.json')
-				: new EnableBankingClient(),
-			account_id,
-			dateFromStr,
-		);
-		
-		const result = await syncTransactions(bankGateway, txRepo);
-		console.log({ account_id, synced: result.synced, dateFrom: dateFromStr });
-		results.push({ account_id, synced: result.synced });
+	for (const { accounts } of sessions) {
+		for (const account_id of accounts) {
+			const bankGateway = new EnableBankingAdapter(
+				sandbox
+					? new FileEnableBankingClient('data/transactions-2026-04-01.json')
+					: new EnableBankingClient(),
+				account_id,
+				dateFromStr,
+			);
+
+			const result = await syncTransactions(bankGateway, txRepo);
+			console.log({ account_id, synced: result.synced, dateFrom: dateFromStr });
+			results.push({ account_id, synced: result.synced });
+		}
 	}
 
 	return { results };

@@ -1,8 +1,12 @@
 export interface BankSession {
+	id: string;  
 	status: string;
 	accounts: string[];
-	accountsData: Array<{ uid: string; identificationHash: string }>;
-	validUntil: string;
+	bankConnector: {
+		name: string;
+		country: string;
+	};
+	expireAt: string;
 }
 
 /** A transaction row as returned from the database (snake_case, DB-native types). */

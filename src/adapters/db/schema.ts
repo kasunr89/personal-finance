@@ -1,4 +1,4 @@
-import type { Generated } from 'kysely';
+import type { ColumnType, Generated } from 'kysely';
 import type { StoredTransaction } from '../../domain/types.js';
 
 /** Kysely table definition for `transactions`. `id` and `created_at` are auto-generated. */
@@ -7,13 +7,15 @@ export interface TransactionsTable extends Omit<StoredTransaction, 'id' | 'creat
 	created_at: Generated<Date>;
 }
 
-export interface EnablebankingAccountsTable {
-	account_id: string;
+export interface EnablebankingSessionsTable {
+	id: string;
 	created_at: Generated<Date>;
 	expire_at: Date;
+	bank_key: string;
+	accounts: ColumnType<string[], string, string>;
 }
 
 export interface Database {
 	transactions: TransactionsTable;
-	enablebanking_accounts: EnablebankingAccountsTable;
+	enablebanking_sessions: EnablebankingSessionsTable;
 }

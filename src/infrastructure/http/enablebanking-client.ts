@@ -8,6 +8,24 @@ import { mapRawTransaction } from '../mappers/enablebanking-transaction.js';
 
 const API_BASE = 'https://api.enablebanking.com';
 
+interface EnableBankingCreatedSession {
+	session_id: string;
+	accounts: Array<{
+		uid: string;
+		identification_hash: string;
+		identification_hashes: string[];
+		name?: string;
+	}>;
+	aspsp: { name: string; country: string };
+	psu_type: string;
+	access: {
+		accounts: string[] | null;
+		balances: boolean;
+		transactions: boolean;
+		valid_until: string;
+	};
+}
+
 interface EnableBankingSession {
 	status: string;
 	accounts: string[];
@@ -30,16 +48,29 @@ interface EnableBankingSession {
 	closed: string | null;
 }
 
-
-function toBankSession(raw: EnableBankingSession): BankSession {
+function createdSessionToBankSession(raw: EnableBankingCreatedSession): BankSession {
 	return {
+		id: raw.session_id,
+		status: 'AUTHORIZED',
+		accounts: raw.accounts.map((a) => a.uid),
+		bankConnector: {
+			name: raw.aspsp.name,
+			country: raw.aspsp.country,
+		},
+		expireAt: raw.access.valid_until,
+	};
+}
+
+function sessionToBankSession(id: BankSession['id'], raw: EnableBankingSession): BankSession {
+	return {
+		id,
 		status: raw.status,
 		accounts: raw.accounts,
-		accountsData: raw.accounts_data.map((a) => ({
-			uid: a.uid,
-			identificationHash: a.identification_hash,
-		})),
-		validUntil: raw.access.valid_until,
+		bankConnector: {
+			name: raw.aspsp.name,
+			country: raw.aspsp.country,
+		},
+		expireAt: raw.access.valid_until,
 	};
 }
 
@@ -100,10 +131,11 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 	async startAuth(
 		redirectUrl: string,
 		validUntil: string,
+		aspsp: { name: string; country: string },
 	): Promise<{ url: string }> {
 		return (await this.apiRequest('POST', '/auth', {
 			access: { valid_until: validUntil },
-			aspsp: { name: 'LHV Pank', country: 'EE' },
+			aspsp,
 			state: crypto.randomUUID(),
 			redirect_url: redirectUrl,
 			psu_type: 'personal',
@@ -114,8 +146,9 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 	async createSession(code: string): Promise<BankSession> {
 		const raw = (await this.apiRequest('POST', '/sessions', {
 			code,
-		})) as EnableBankingSession;
-		return toBankSession(raw);
+		})) as EnableBankingCreatedSession;
+		console.log(raw);
+		return createdSessionToBankSession(raw);
 	}
 
 	async getSession(sessionId: string): Promise<BankSession> {
@@ -123,7 +156,7 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 			'GET',
 			`/sessions/${sessionId}`,
 		)) as EnableBankingSession;
-		return toBankSession(raw);
+		return sessionToBankSession(sessionId, raw);
 	}
 
 	async deleteSession(sessionId: string): Promise<void> {
