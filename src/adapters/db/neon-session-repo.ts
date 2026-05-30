@@ -24,6 +24,13 @@ export class NeonSessionRepo implements SessionRepo {
 		return rows as EnablebankingSession[];
 	}
 
+	async deleteById(id: string): Promise<void> {
+		await this.db
+			.deleteFrom('enablebanking_sessions')
+			.where('id', '=', id)
+			.execute();
+	}
+
 	async deleteByConnector(connector: string): Promise<void> {
 		await this.db
 			.deleteFrom('enablebanking_sessions')

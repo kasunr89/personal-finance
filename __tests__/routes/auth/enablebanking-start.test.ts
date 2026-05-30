@@ -24,6 +24,7 @@ function makeSessionRepo(overrides?: Partial<SessionRepo>): SessionRepo {
 		getAll: mock.fn(async () => [] as EnablebankingSession[]),
 		getByConnector: mock.fn(async () => [] as EnablebankingSession[]),
 		upsert: mock.fn(async () => {}),
+		deleteById: mock.fn(async () => {}),
 		deleteByConnector: mock.fn(async () => {}),
 		...overrides,
 	};

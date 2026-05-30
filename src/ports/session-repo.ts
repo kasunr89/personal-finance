@@ -11,5 +11,6 @@ export interface SessionRepo {
 	getAll(): Promise<EnablebankingSession[]>;
 	getByConnector(connector: ConnectorKey): Promise<EnablebankingSession[]>;
 	upsert(session: EnablebankingSession): Promise<void>;
+	deleteById(id: string): Promise<void>;
 	deleteByConnector(connector: ConnectorKey): Promise<void>;
 }

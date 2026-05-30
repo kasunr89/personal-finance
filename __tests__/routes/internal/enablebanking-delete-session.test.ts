@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import Fastify from 'fastify';
 import type { BankSession } from '../../../src/domain/types.js';
 import type { EnableBankingSessionGateway } from '../../../src/ports/enablebanking-session-gateway.js';
+import type { EnablebankingSession, SessionRepo } from '../../../src/ports/session-repo.js';
 
 function makeSessionGateway(
 	overrides?: Partial<EnableBankingSessionGateway>,
@@ -16,14 +17,26 @@ function makeSessionGateway(
 	};
 }
 
+function makeSessionRepo(overrides?: Partial<SessionRepo>): SessionRepo {
+	return {
+		getAll: mock.fn(async () => [] as EnablebankingSession[]),
+		getByConnector: mock.fn(async () => [] as EnablebankingSession[]),
+		upsert: mock.fn(async () => {}),
+		deleteById: mock.fn(async () => {}),
+		deleteByConnector: mock.fn(async () => {}),
+		...overrides,
+	};
+}
+
 describe('DELETE /enablebanking/sessions/:sessionId', () => {
 	it('returns 204 on successful deletion', async () => {
-		const sessionGateway = makeSessionGateway();
-
 		const app = Fastify();
 		const { deleteEnableBankingSessionRoute } =
 			await import('../../../src/infrastructure/routes/internal/delete-enablebanking-session.js');
-		app.register(deleteEnableBankingSessionRoute, { sessionGateway });
+		app.register(deleteEnableBankingSessionRoute, {
+			sessionGateway: makeSessionGateway(),
+			sessionRepo: makeSessionRepo(),
+		});
 
 		const response = await app.inject({
 			method: 'DELETE',
@@ -42,7 +55,10 @@ describe('DELETE /enablebanking/sessions/:sessionId', () => {
 		const app = Fastify({ logger: false });
 		const { deleteEnableBankingSessionRoute } =
 			await import('../../../src/infrastructure/routes/internal/delete-enablebanking-session.js');
-		app.register(deleteEnableBankingSessionRoute, { sessionGateway });
+		app.register(deleteEnableBankingSessionRoute, {
+			sessionGateway,
+			sessionRepo: makeSessionRepo(),
+		});
 
 		const response = await app.inject({
 			method: 'DELETE',
