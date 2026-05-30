@@ -20,7 +20,8 @@ export async function getEnableBankingStartRoute(
 		const { bank } = request.params as { bank: string };
 		const sessionRepo = opts.sessionRepo ?? new NeonSessionRepo(fastify.db);
 		const redirectUrl = `${process.env.REDIRECT_HOST}/callback`;
-		const result = await startEnableBankingAuth(sessionGateway, sessionRepo, redirectUrl, bank);
-		return reply.send(result);
+		const { url } = await startEnableBankingAuth(sessionGateway, sessionRepo, redirectUrl, bank);
+
+		reply.redirect(url);
 	});
 }

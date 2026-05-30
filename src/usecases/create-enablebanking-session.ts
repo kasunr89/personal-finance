@@ -1,7 +1,7 @@
 import type { BankSession } from '../domain/types.js';
 import type { EnableBankingSessionGateway } from '../ports/enablebanking-session-gateway.js';
 import type { SessionRepo } from '../ports/session-repo.js';
-import { bankKeyFromName } from '../domain/banks.js';
+import { connectorFromName } from '../domain/banks.js';
 import { UnknownBankConnectorError } from '../domain/errors.js';
 
 export async function createEnableBankingSession(
@@ -11,19 +11,30 @@ export async function createEnableBankingSession(
 ): Promise<BankSession> {
 	const session = await sessionGateway.createSession(code);
 
-	const bankKey = bankKeyFromName(session.bankConnector.name);
-	if (!bankKey) {
+	console.log('Create enablebanking session', session);
+
+	const connector = connectorFromName(session.bankConnector.name);
+	if (!connector) {
+		console.log('Unknown connector', session.bankConnector.name);
+
 		throw new UnknownBankConnectorError(session.bankConnector.name);
 	}
 
-	for (const s of await sessionRepo.getByBankKey(bankKey)) {
-		await sessionGateway.deleteSession(s.id);
+	const existingSessions = await sessionRepo.getByConnector(connector);
+
+	for (const existingSession of existingSessions) {
+		try {
+			await sessionGateway.deleteSession(existingSession.id);
+		} catch (e) {
+			console.log(`Failed to delete session ${existingSession.id}`, e);
+		}
+		
 	}
 
-	await sessionRepo.deleteByBankKey(bankKey);
+	await sessionRepo.deleteByConnector(connector);
 	await sessionRepo.upsert({
 		id: session.id,
-		bank_key: bankKey,
+		connector,
 		expire_at: new Date(session.expireAt),
 		accounts: session.accounts,
 	});

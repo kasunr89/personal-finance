@@ -147,7 +147,6 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 		const raw = (await this.apiRequest('POST', '/sessions', {
 			code,
 		})) as EnableBankingCreatedSession;
-		console.log(raw);
 		return createdSessionToBankSession(raw);
 	}
 

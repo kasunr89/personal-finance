@@ -22,9 +22,9 @@ function makeSessionGateway(
 function makeSessionRepo(overrides?: Partial<SessionRepo>): SessionRepo {
 	return {
 		getAll: mock.fn(async () => [] as EnablebankingSession[]),
-		getByBankKey: mock.fn(async () => [] as EnablebankingSession[]),
+		getByConnector: mock.fn(async () => [] as EnablebankingSession[]),
 		upsert: mock.fn(async () => {}),
-		deleteByBankKey: mock.fn(async () => {}),
+		deleteByConnector: mock.fn(async () => {}),
 		...overrides,
 	};
 }
@@ -60,7 +60,7 @@ describe('GET /:bank/start', () => {
 				{
 					id: 'session-1',
 					expire_at: new Date(Date.now() + 60 * 60 * 1000),
-					bank_key: 'lhv' as const,
+					connector: 'lhv' as const,
 					accounts: ['acc-1'],
 				},
 			]),
@@ -81,7 +81,7 @@ describe('GET /:bank/start', () => {
 				{
 					id: 'session-1',
 					expire_at: new Date(Date.now() + 60 * 60 * 1000),
-					bank_key: 'wise' as const,
+					connector: 'wise' as const,
 					accounts: ['acc-1'],
 				},
 			]),

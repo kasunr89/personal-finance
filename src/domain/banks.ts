@@ -3,8 +3,8 @@ export const BANKS = {
 	wise: { name: 'Wise',     country: 'EE' },
 } as const;
 
-export type BankKey = keyof typeof BANKS;
+export type ConnectorKey = keyof typeof BANKS;
 
-export function bankKeyFromName(name: string): BankKey | undefined {
-	return (Object.keys(BANKS) as BankKey[]).find((k) => BANKS[k].name === name);
+export function connectorFromName(name: string): ConnectorKey | undefined {
+	return (Object.keys(BANKS) as ConnectorKey[]).find((k) => BANKS[k].name === name);
 }

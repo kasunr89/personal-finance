@@ -11,7 +11,7 @@ export interface EnablebankingSessionsTable {
 	id: string;
 	created_at: Generated<Date>;
 	expire_at: Date;
-	bank_key: string;
+	connector: string;
 	accounts: ColumnType<string[], string, string>;
 }
 

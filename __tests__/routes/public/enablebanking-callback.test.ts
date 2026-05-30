@@ -28,9 +28,9 @@ function makeSessionGateway(
 function makeSessionRepo(overrides?: Partial<SessionRepo>): SessionRepo {
 	return {
 		getAll: mock.fn(async () => []),
-		getByBankKey: mock.fn(async () => []),
+		getByConnector: mock.fn(async () => []),
 		upsert: mock.fn(async () => {}),
-		deleteByBankKey: mock.fn(async () => {}),
+		deleteByConnector: mock.fn(async () => {}),
 		...overrides,
 	};
 }
