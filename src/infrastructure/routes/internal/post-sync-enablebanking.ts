@@ -10,7 +10,6 @@ import { EnableBankingClient } from '../../http/enablebanking-client.js';
 import { FileEnableBankingClient } from '../../file/file-enablebanking-client.js';
 import { syncTransactions } from '../../../usecases/sync-bank-transactions.js';
 import { categorizeTransactions } from '../../../usecases/categorize-transactions.js';
-import { transactionEvents, TRANSACTIONS_SYNCED } from '../../events/transaction-events.js';
 
 const Body = Type.Object({
 	account_id: Type.String({ minLength: 1 }),
@@ -33,16 +32,6 @@ export async function postSyncEnableBankingRoute(
 	const repo = opts.repo ?? new NeonTransactionRepo(fastify.db);
 	const categoryClient = opts.categoryClient ?? new OpenAiClient();
 	const secret = process.env.SYNC_SECRET;
-
-	const listener = () => {
-		categorizeTransactions(repo, categoryClient).catch(
-			(err) => fastify.log.error({ err }, 'Background categorization failed'),
-		);
-	};
-	transactionEvents.on(TRANSACTIONS_SYNCED, listener);
-	fastify.addHook('onClose', () => {
-		transactionEvents.removeListener(TRANSACTIONS_SYNCED, listener);
-	});
 
 	fastify.post<{ Body: Body }>(
 		'/sync-enablebanking',
@@ -67,7 +56,9 @@ export async function postSyncEnableBankingRoute(
 
 			try {
 				const result = await syncTransactions(bankGateway, repo);
-				transactionEvents.emit(TRANSACTIONS_SYNCED);
+				categorizeTransactions(repo, categoryClient).catch(
+					(err) => fastify.log.error({ err }, 'Background categorization failed'),
+				);
 				return reply.send(result);
 			} catch (err) {
 				if (

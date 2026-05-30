@@ -171,8 +171,9 @@ const all: EnableBankingRawTransaction[] = [];
 
 		do {
 			const params = new URLSearchParams({ date_from: dateFrom });
-			if (continuationKey)
+			if (continuationKey) {
 				params.set('continuation_key', continuationKey);
+			}
 
 			const res = (await this.apiRequest(
 				'GET',
