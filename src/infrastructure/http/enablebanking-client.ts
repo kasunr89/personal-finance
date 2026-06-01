@@ -1,5 +1,6 @@
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
+import type { ConnectorKey } from '../../domain/banks.js';
 import type { BankSession, Transaction } from '../../domain/types.js';
 import type { EnableBankingSessionGateway } from '../../ports/enablebanking-session-gateway.js';
 import type { EnableBankingTransactionGateway } from '../../ports/enablebanking-transaction-gateway.js';
@@ -165,8 +166,9 @@ export class EnableBankingClient implements EnableBankingSessionGateway, EnableB
 	async getAllTransactions(
 		accountUid: string,
 		dateFrom: string,
+		source: ConnectorKey,
 	): Promise<Transaction[]> {
-const all: EnableBankingRawTransaction[] = [];
+		const all: EnableBankingRawTransaction[] = [];
 		let continuationKey: string | undefined;
 
 		do {
@@ -189,6 +191,6 @@ const all: EnableBankingRawTransaction[] = [];
 
 		return all
 			.filter((t) => ['BOOK', 'OTHR'].includes(t.status))
-			.map((t) => mapRawTransaction(t, 'lhv'));
+			.map((t) => mapRawTransaction(t, source));
 	}
 }

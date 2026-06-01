@@ -12,6 +12,7 @@ const Params = Type.Object({
 
 const Query = Type.Object({
 	date_from: Type.Optional(Type.String()),
+	source: Type.Union([Type.Literal('lhv'), Type.Literal('wise')]),
 });
 
 const TransactionReply = Type.Object({
@@ -20,11 +21,7 @@ const TransactionReply = Type.Object({
 		value: Type.Number(),
 		currency: Type.String(),
 	}),
-	source: Type.Union([
-		Type.Literal('lhv-sandbox'),
-		Type.Literal('lhv'),
-		Type.Literal('wise'),
-	]),
+	source: Type.Union([Type.Literal('lhv'), Type.Literal('wise')]),
 	creditor: Type.Object({
 		name: Type.Union([Type.String(), Type.Null()]),
 		iban: Type.Union([Type.String(), Type.Null()]),
@@ -65,7 +62,7 @@ export async function getEnableBankingTransactionsRoute(
 		},
 		async (request, reply) => {
 			const { accountId } = request.params;
-			const { date_from } = request.query;
+			const { date_from, source } = request.query;
 			const dateFrom =
 				date_from ??
 				new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
@@ -79,6 +76,7 @@ export async function getEnableBankingTransactionsRoute(
 						: new EnableBankingClient(),
 					accountId,
 					dateFrom,
+					source,
 				);
 			const transactions = await getBankTransactions(bankGateway);
 

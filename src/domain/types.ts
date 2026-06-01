@@ -1,3 +1,5 @@
+import type { ConnectorKey } from './banks.js';
+
 export interface BankSession {
 	id: string;  
 	status: string;
@@ -43,7 +45,7 @@ export interface Transaction {
 		name: string | null;
 		iban: string | null;
 	};
-	source: 'lhv' | 'wise' | 'lhv-sandbox';
+	source: ConnectorKey;
 	type: 'credit' | 'debit';
 	status: string;
 	date: string;

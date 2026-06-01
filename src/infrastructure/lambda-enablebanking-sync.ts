@@ -31,7 +31,7 @@ export const handler: Handler = async () => {
 	const sandbox = process.env.SANDBOX === 'true';
 
 	const results: { account_id: string; synced: number }[] = [];
-	for (const { accounts } of sessions) {
+	for (const { accounts, connector } of sessions) {
 		for (const account_id of accounts) {
 			const bankGateway = new EnableBankingAdapter(
 				sandbox
@@ -39,6 +39,7 @@ export const handler: Handler = async () => {
 					: new EnableBankingClient(),
 				account_id,
 				dateFromStr,
+				connector,
 			);
 
 			const result = await syncTransactions(bankGateway, txRepo);

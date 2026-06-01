@@ -1,9 +1,10 @@
+import type { ConnectorKey } from '../../domain/banks.js';
 import type { Transaction } from '../../domain/types.js';
 import type { EnableBankingRawTransaction } from '../types/enablebanking-raw-transaction.js';
 
 export function mapRawTransaction(
 	t: EnableBankingRawTransaction,
-	source: Transaction['source'],
+	source: ConnectorKey,
 ): Transaction {
 	return {
 		referenceId: t.entry_reference,

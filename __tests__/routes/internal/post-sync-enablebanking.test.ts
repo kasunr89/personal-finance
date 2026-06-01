@@ -8,7 +8,7 @@ import type { TransactionCategoryGateway } from '../../../src/ports/transaction-
 process.env.SYNC_SECRET = 'test-secret';
 
 const AUTH = 'Bearer test-secret';
-const BODY = { account_id: 'EE123', date_from: '2026-04-01' };
+const BODY = { account_id: 'EE123', date_from: '2026-04-01', source: 'lhv' };
 
 const mockBankGateway: BankGateway = {
 	getTransactions: mock.fn(async () => []),

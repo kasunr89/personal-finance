@@ -14,6 +14,7 @@ import { categorizeTransactions } from '../../../usecases/categorize-transaction
 const Body = Type.Object({
 	account_id: Type.String({ minLength: 1 }),
 	date_from: Type.String({ minLength: 1 }),
+	source: Type.Union([Type.Literal('lhv'), Type.Literal('wise')]),
 });
 
 type Body = Static<typeof Body>;
@@ -42,7 +43,7 @@ export async function postSyncEnableBankingRoute(
 				return reply.status(401).send({ error: 'Unauthorized' });
 			}
 
-			const { account_id, date_from } = request.body;
+			const { account_id, date_from, source } = request.body;
 
 			const bankGateway =
 				opts.bankGateway ??
@@ -52,6 +53,7 @@ export async function postSyncEnableBankingRoute(
 						: new EnableBankingClient(),
 					account_id,
 					date_from,
+					source,
 				);
 
 			try {

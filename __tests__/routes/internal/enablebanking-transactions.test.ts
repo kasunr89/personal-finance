@@ -31,7 +31,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 
 		const response = await app.inject({
 			method: 'GET',
-			url: '/enablebanking/accounts/acc-1/transactions',
+			url: '/enablebanking/accounts/acc-1/transactions?source=lhv',
 		});
 		assert.equal(response.statusCode, 200);
 		const body = JSON.parse(response.body);
@@ -55,7 +55,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 
 		const response = await app.inject({
 			method: 'GET',
-			url: '/enablebanking/accounts/acc-1/transactions',
+			url: '/enablebanking/accounts/acc-1/transactions?source=lhv',
 		});
 		assert.equal(response.statusCode, 200);
 		assert.deepEqual(JSON.parse(response.body), []);
@@ -77,7 +77,7 @@ describe('GET /enablebanking/accounts/:accountId/transactions', () => {
 
 		const response = await app.inject({
 			method: 'GET',
-			url: '/enablebanking/accounts/acc-1/transactions',
+			url: '/enablebanking/accounts/acc-1/transactions?source=lhv',
 		});
 		assert.equal(response.statusCode, 500);
 	});
